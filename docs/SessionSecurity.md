@@ -130,14 +130,14 @@ setcookie('session_id', $sessionId, [
 
 ### Session ID Generation
 
-#### Weak Session IDs ❌
+#### Weak Session IDs [INSECURE]
 ```php
 // PREDICTABLE - Don't do this!
 session_id('session_' . time());
 session_id('session_' . rand(1000, 9999));
 ```
 
-#### Strong Session IDs ✅
+#### Strong Session IDs [SECURE]
 ```php
 // PHP generates secure random session IDs automatically
 session_start(); // Uses cryptographically secure random bytes
@@ -224,7 +224,7 @@ class SecureSessionManager
 
 ### What NOT to Store in Sessions
 
-#### Sensitive Data ❌
+#### Sensitive Data [INSECURE]
 ```php
 <?php
 // DANGER: Never store sensitive data in sessions
@@ -234,7 +234,7 @@ $_SESSION['ssn'] = $socialSecurityNumber;   // PII
 $_SESSION['api_key'] = $secretApiKey;       // Secrets
 ```
 
-#### Large Data ❌
+#### Large Data [INSECURE]
 ```php
 <?php
 // PROBLEMATIC: Large data in sessions
@@ -242,7 +242,7 @@ $_SESSION['user_profile'] = $largeUserObject;  // Memory issues
 $_SESSION['file_contents'] = file_get_contents('large_file.txt'); // Performance
 ```
 
-### What to Store in Sessions ✅
+### What to Store in Sessions [SECURE]
 
 ```php
 <?php

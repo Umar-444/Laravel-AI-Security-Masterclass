@@ -20,19 +20,19 @@ Password hashing converts plain text passwords into irreversible strings. Unlike
 
 ### Cryptographic Hash Functions
 
-#### MD5 ❌ (Broken)
+#### MD5 [INSECURE] (Broken)
 ```php
 // NEVER USE - Cryptographically broken
 $hash = md5('password'); // Always same result, fast to crack
 ```
 
-#### SHA-256 ❌ (Inadequate for passwords)
+#### SHA-256 [INSECURE] (Inadequate for passwords)
 ```php
 // PROBLEMATIC - Designed for data integrity, not passwords
 $hash = hash('sha256', 'password'); // No salt, fast to crack with rainbow tables
 ```
 
-#### bcrypt ✅ (Recommended)
+#### bcrypt [SECURE] (Recommended)
 ```php
 // SECURE - Designed specifically for passwords
 $hash = password_hash('password', PASSWORD_BCRYPT, [
@@ -40,7 +40,7 @@ $hash = password_hash('password', PASSWORD_BCRYPT, [
 ]);
 ```
 
-#### Argon2id ✅ (Modern Standard — OWASP 2024 Recommended)
+#### Argon2id [SECURE] (Modern Standard — OWASP 2024 Recommended)
 ```php
 // MOST SECURE — Winner of Password Hashing Competition
 // OWASP Authentication Cheat Sheet 2024 parameters:
@@ -456,7 +456,7 @@ class PasswordPolicy
         $allChars = $lowercase . $uppercase . $numbers . $symbols;
 
         // Ensure at least one of each type
-        // ✅ random_int() is cryptographically secure — NEVER use rand() for security purposes
+        // [SECURE] random_int() is cryptographically secure — NEVER use rand() for security purposes
         $password  = '';
         $password .= $lowercase[random_int(0, strlen($lowercase) - 1)];
         $password .= $uppercase[random_int(0, strlen($uppercase) - 1)];

@@ -15,7 +15,7 @@ declare(strict_types=1);
 class SessionConfiguration
 {
     /**
-     * ❌ INSECURE: Default PHP session configuration
+     * [INSECURE]: Default PHP session configuration
      * Vulnerable to session hijacking, fixation, and eavesdropping
      */
     public static function insecureSessionSetup(): void
@@ -25,7 +25,7 @@ class SessionConfiguration
     }
 
     /**
-     * ✅ SECURE: Properly configured sessions
+     * [SECURE]: Properly configured sessions
      */
     public static function secureSessionSetup(): void
     {
@@ -45,7 +45,7 @@ class SessionConfiguration
     }
 
     /**
-     * ❌ INSECURE: Accepting user-provided session IDs
+     * [INSECURE]: Accepting user-provided session IDs
      * Vulnerable to session fixation attacks
      */
     public static function vulnerableSessionFixation(string $userSessionId): void
@@ -58,7 +58,7 @@ class SessionConfiguration
     }
 
     /**
-     * ✅ SECURE: Automatic session ID generation
+     * [SECURE]: Automatic session ID generation
      */
     public static function secureSessionStart(): void
     {
@@ -98,7 +98,7 @@ class SessionConfiguration
 class SessionDataManagement
 {
     /**
-     * ❌ INSECURE: Storing sensitive data in sessions
+     * [INSECURE]: Storing sensitive data in sessions
      * Never store passwords, credit cards, or other sensitive data
      */
     public static function insecureDataStorage(): void
@@ -120,7 +120,7 @@ class SessionDataManagement
     }
 
     /**
-     * ✅ SECURE: Safe session data storage
+     * [SECURE]: Safe session data storage
      * Only store identifiers and temporary flags
      */
     public static function secureDataStorage(): void
@@ -141,7 +141,7 @@ class SessionDataManagement
     }
 
     /**
-     * ✅ SECURE: Type-safe session data handling
+     * [SECURE]: Type-safe session data handling
      */
     public static function safeSessionOperations(): void
     {
@@ -208,7 +208,7 @@ class SessionDataManagement
 class AuthenticationSessionManager
 {
     /**
-     * ❌ INSECURE: Vulnerable login implementation
+     * [INSECURE]: Vulnerable login implementation
      * No session regeneration, stores sensitive data
      */
     public static function insecureLogin(array $user): void
@@ -226,7 +226,7 @@ class AuthenticationSessionManager
     }
 
     /**
-     * ✅ SECURE: Proper login session management
+     * [SECURE]: Proper login session management
      */
     public static function secureLogin(array $user): void
     {
@@ -252,7 +252,7 @@ class AuthenticationSessionManager
     }
 
     /**
-     * ❌ INSECURE: Weak logout implementation
+     * [INSECURE]: Weak logout implementation
      */
     public static function insecureLogout(): void
     {
@@ -264,7 +264,7 @@ class AuthenticationSessionManager
     }
 
     /**
-     * ✅ SECURE: Complete logout implementation
+     * [SECURE]: Complete logout implementation
      */
     public static function secureLogout(): void
     {
@@ -305,7 +305,7 @@ class AuthenticationSessionManager
     }
 
     /**
-     * ✅ SECURE: Session validation on each request
+     * [SECURE]: Session validation on each request
      */
     public static function validateSession(): bool
     {
@@ -359,7 +359,7 @@ class AuthenticationSessionManager
 class SessionHijackingPrevention
 {
     /**
-     * ❌ INSECURE: No protection against session hijacking
+     * [INSECURE]: No protection against session hijacking
      */
     public static function vulnerableToHijacking(): void
     {
@@ -372,7 +372,7 @@ class SessionHijackingPrevention
     }
 
     /**
-     * ✅ SECURE: Multiple layers of hijacking protection
+     * [SECURE]: Multiple layers of hijacking protection
      */
     public static function protectAgainstHijacking(): void
     {
@@ -683,12 +683,12 @@ class SessionSecurityTester
 
     public static function demonstrateVulnerabilities(): void
     {
-        echo "⚠️  WARNING: The following examples demonstrate VULNERABILITIES\n";
-        echo "🚫 NEVER use these in production code!\n\n";
+        echo "Warning:  WARNING: The following examples demonstrate VULNERABILITIES\n";
+        echo " NEVER use these in production code!\n\n";
 
         // This would be vulnerable - don't actually run it
-        echo "❌ Vulnerable patterns shown in comments only for educational purposes\n";
-        echo "✅ Always use the secure alternatives above\n";
+        echo "[INSECURE] Vulnerable patterns shown in comments only for educational purposes\n";
+        echo "[SECURE] Always use the secure alternatives above\n";
     }
 }
 

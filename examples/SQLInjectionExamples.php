@@ -86,7 +86,7 @@ class BasicSQLInjection
     }
 
     /**
-     * ❌ VULNERABLE: Direct string concatenation
+     * [INSECURE] VULNERABLE: Direct string concatenation
      * Attacker can input: 1' OR '1'='1
      * Result: SELECT * FROM users WHERE id = 1' OR '1'='1
      */
@@ -100,7 +100,7 @@ class BasicSQLInjection
     }
 
     /**
-     * ✅ SECURE: Prepared statement with positional parameters
+     * [SECURE]: Prepared statement with positional parameters
      */
     public function getUserSecure(string $userId): ?array
     {
@@ -111,7 +111,7 @@ class BasicSQLInjection
     }
 
     /**
-     * ❌ VULNERABLE: Authentication bypass
+     * [INSECURE] VULNERABLE: Authentication bypass
      * Attacker can input username: admin' --
      * Password: anything
      */
@@ -125,7 +125,7 @@ class BasicSQLInjection
     }
 
     /**
-     * ✅ SECURE: Secure authentication
+     * [SECURE]: Secure authentication
      */
     public function loginSecure(string $username, string $password): ?array
     {
@@ -155,7 +155,7 @@ class UnionSQLInjection
     }
 
     /**
-     * ❌ VULNERABLE: Union-based injection
+     * [INSECURE] VULNERABLE: Union-based injection
      * Attacker can input: 1' UNION SELECT username, password, role, null FROM users --
      */
     public function getProductVulnerable(string $productId): array
@@ -168,7 +168,7 @@ class UnionSQLInjection
     }
 
     /**
-     * ✅ SECURE: Prepared statement prevents union attacks
+     * [SECURE]: Prepared statement prevents union attacks
      */
     public function getProductSecure(string $productId): array
     {
@@ -179,7 +179,7 @@ class UnionSQLInjection
     }
 
     /**
-     * ❌ VULNERABLE: Multiple column union attack
+     * [INSECURE] VULNERABLE: Multiple column union attack
      * Attacker can dump database structure
      */
     public function searchProductsVulnerable(string $category): array
@@ -192,7 +192,7 @@ class UnionSQLInjection
     }
 
     /**
-     * ✅ SECURE: Parameterized search
+     * [SECURE]: Parameterized search
      */
     public function searchProductsSecure(string $category): array
     {
@@ -217,7 +217,7 @@ class LikeQueryInjection
     }
 
     /**
-     * ❌ VULNERABLE: LIKE query injection
+     * [INSECURE] VULNERABLE: LIKE query injection
      * Attacker can input: %' UNION SELECT username, password, '1', '1' FROM users --
      */
     public function searchUsersVulnerable(string $searchTerm): array
@@ -230,7 +230,7 @@ class LikeQueryInjection
     }
 
     /**
-     * ✅ SECURE: LIKE with prepared statements
+     * [SECURE]: LIKE with prepared statements
      */
     public function searchUsersSecure(string $searchTerm): array
     {
@@ -241,7 +241,7 @@ class LikeQueryInjection
     }
 
     /**
-     * ✅ SECURE: LIKE with named parameters
+     * [SECURE]: LIKE with named parameters
      */
     public function searchProductsByName(string $name): array
     {
@@ -266,7 +266,7 @@ class DynamicNameInjection
     }
 
     /**
-     * ❌ VULNERABLE: Dynamic table name
+     * [INSECURE] VULNERABLE: Dynamic table name
      * Attacker can input: users; DROP TABLE products; --
      */
     public function getRecordsFromTableVulnerable(string $tableName): array
@@ -279,7 +279,7 @@ class DynamicNameInjection
     }
 
     /**
-     * ✅ SECURE: Whitelist table names
+     * [SECURE]: Whitelist table names
      */
     public function getRecordsFromTableSecure(string $tableName): array
     {
@@ -296,7 +296,7 @@ class DynamicNameInjection
     }
 
     /**
-     * ❌ VULNERABLE: Dynamic column name for ordering
+     * [INSECURE] VULNERABLE: Dynamic column name for ordering
      * Attacker can input: id; DROP TABLE users; --
      */
     public function getProductsOrderedVulnerable(string $orderBy): array
@@ -309,7 +309,7 @@ class DynamicNameInjection
     }
 
     /**
-     * ✅ SECURE: Whitelist column names
+     * [SECURE]: Whitelist column names
      */
     public function getProductsOrderedSecure(string $orderBy): array
     {
@@ -340,7 +340,7 @@ class InClauseInjection
     }
 
     /**
-     * ❌ VULNERABLE: IN clause injection
+     * [INSECURE] VULNERABLE: IN clause injection
      * Attacker can input: 1,2); DROP TABLE users; --
      */
     public function getUsersByIdsVulnerable(string $ids): array
@@ -353,7 +353,7 @@ class InClauseInjection
     }
 
     /**
-     * ✅ SECURE: IN clause with prepared statements
+     * [SECURE]: IN clause with prepared statements
      */
     public function getUsersByIdsSecure(string $ids): array
     {
@@ -377,7 +377,7 @@ class InClauseInjection
     }
 
     /**
-     * ✅ SECURE: IN clause with named parameters
+     * [SECURE]: IN clause with named parameters
      */
     public function getProductsByCategories(array $categories): array
     {
@@ -417,7 +417,7 @@ class SecondOrderInjection
     }
 
     /**
-     * ❌ VULNERABLE: Second-order injection setup
+     * [INSECURE] VULNERABLE: Second-order injection setup
      * Step 1: Store malicious data
      */
     public function createUserVulnerable(string $username, string $email): int
@@ -430,7 +430,7 @@ class SecondOrderInjection
     }
 
     /**
-     * ❌ VULNERABLE: Second-order injection exploitation
+     * [INSECURE] VULNERABLE: Second-order injection exploitation
      * Step 2: Use stored malicious data in vulnerable query
      * If username was stored as: admin'; --
      * This query becomes: SELECT * FROM users WHERE username = 'admin'; --' AND password = ?
@@ -457,7 +457,7 @@ class SecondOrderInjection
     }
 
     /**
-     * ✅ SECURE: Prevent second-order injection
+     * [SECURE]: Prevent second-order injection
      */
     public function loginSecondOrderSecure(string $username, string $password): ?array
     {
@@ -489,13 +489,13 @@ class User extends Model
 
     protected $fillable = ['username', 'email', 'password', 'role'];
 
-    // ✅ SECURE: Eloquent automatically prevents SQL injection
+    // [SECURE]: Eloquent automatically prevents SQL injection
     public static function findUserById(int $id): ?self
     {
         return self::where('id', $id)->where('active', true)->first();
     }
 
-    // ✅ SECURE: Parameter binding in raw queries
+    // [SECURE]: Parameter binding in raw queries
     public static function findUsersByRole(string $role): array
     {
         return self::whereRaw('role = ?', [$role])->get()->toArray();
@@ -511,7 +511,7 @@ use Illuminate\Support\Facades\DB;
 class UserController extends Controller
 {
     /**
-     * ✅ SECURE: Laravel Query Builder
+     * [SECURE]: Laravel Query Builder
      */
     public function getUser(Request $request)
     {
@@ -525,7 +525,7 @@ class UserController extends Controller
     }
 
     /**
-     * ✅ SECURE: Eloquent with relationships
+     * [SECURE]: Eloquent with relationships
      */
     public function getUserWithPosts(Request $request)
     {
@@ -538,7 +538,7 @@ class UserController extends Controller
     }
 
     /**
-     * ✅ SECURE: Complex query with multiple conditions
+     * [SECURE]: Complex query with multiple conditions
      */
     public function searchUsers(Request $request)
     {

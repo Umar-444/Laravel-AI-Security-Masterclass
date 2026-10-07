@@ -79,7 +79,7 @@ class SecureLogin
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$user) {
-                // ✅ Always verify against dummy hash — prevents timing-based user enumeration
+                // [SECURE] Always verify against dummy hash — prevents timing-based user enumeration
                 password_verify($password, self::DUMMY_HASH);
                 return false;
             }
@@ -89,7 +89,7 @@ class SecureLogin
                 return false;
             }
 
-            // ✅ Rehash on login if Argon2id parameters have changed
+            // [SECURE] Rehash on login if Argon2id parameters have changed
             if (password_needs_rehash($user['password_hash'], PASSWORD_ARGON2ID, [
                 'memory_cost' => 65536,
                 'time_cost'   => 3,
@@ -104,19 +104,19 @@ class SecureLogin
                 $updateStmt->execute([$newHash, $user['id']]);
             }
 
-            // ✅ Session fixation prevention — regenerate ID on privilege escalation
+            // [SECURE] Session fixation prevention — regenerate ID on privilege escalation
             session_regenerate_id(true);
 
             $_SESSION['user_id']    = $user['id'];
             $_SESSION['login_time'] = time();
             $_SESSION['ip_address'] = $_SERVER['REMOTE_ADDR'] ?? '';
-            // ✅ Store hashed user agent — not raw (prevents log injection)
+            // [SECURE] Store hashed user agent — not raw (prevents log injection)
             $_SESSION['ua_hash']    = hash('sha256', $_SERVER['HTTP_USER_AGENT'] ?? '');
 
             return true;
 
         } catch (PDOException $e) {
-            // ✅ Log error internally — never expose DB errors to user
+            // [SECURE] Log error internally — never expose DB errors to user
             error_log('[SecureLogin] Authentication error: ' . $e->getMessage());
             return false;
         }
@@ -164,7 +164,7 @@ class SecureLogin
         // Clear all session variables
         $_SESSION = [];
 
-        // ✅ Expire the session cookie properly
+        // [SECURE] Expire the session cookie properly
         if (isset($_COOKIE[session_name()])) {
             setcookie(
                 session_name(),

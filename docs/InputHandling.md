@@ -26,7 +26,7 @@ Input handling is the foundation of web application security. All user input sho
 
 ### Allow-List vs Block-List Approach
 
-#### Block-List (Deny-List) Approach ❌
+#### Block-List (Deny-List) Approach [INSECURE]
 ```php
 // PROBLEMATIC: Block-list approach
 function validateUsername($username) {
@@ -47,7 +47,7 @@ function validateUsername($username) {
 - Character encoding issues
 - Context-dependent dangerous characters
 
-#### Allow-List (Permit-List) Approach ✅
+#### Allow-List (Permit-List) Approach [SECURE]
 ```php
 function validateUsername($username) {
     // Only allow specific characters

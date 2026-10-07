@@ -15,7 +15,7 @@ declare(strict_types=1);
 class ReflectedXSS
 {
     /**
-     * ❌ VULNERABLE: Direct output of user input in HTML
+     * [INSECURE] VULNERABLE: Direct output of user input in HTML
      * Attack: ?name=<script>alert('XSS')</script>
      */
     public function vulnerableWelcome(string $name): string
@@ -25,7 +25,7 @@ class ReflectedXSS
     }
 
     /**
-     * ✅ SECURE: Properly escaped HTML output
+     * [SECURE]: Properly escaped HTML output
      */
     public function secureWelcome(string $name): string
     {
@@ -34,7 +34,7 @@ class ReflectedXSS
     }
 
     /**
-     * ❌ VULNERABLE: XSS in HTML attributes
+     * [INSECURE] VULNERABLE: XSS in HTML attributes
      * Attack: ?url=javascript:alert('XSS')
      */
     public function vulnerableLink(string $url, string $text): string
@@ -44,7 +44,7 @@ class ReflectedXSS
     }
 
     /**
-     * ✅ SECURE: Validated and escaped URL
+     * [SECURE]: Validated and escaped URL
      */
     public function secureLink(string $url, string $text): string
     {
@@ -57,7 +57,7 @@ class ReflectedXSS
     }
 
     /**
-     * ❌ VULNERABLE: XSS in form input values
+     * [INSECURE] VULNERABLE: XSS in form input values
      * Attack: ?value='><script>alert('XSS')</script>
      */
     public function vulnerableFormInput(string $value): string
@@ -67,7 +67,7 @@ class ReflectedXSS
     }
 
     /**
-     * ✅ SECURE: Escaped form input
+     * [SECURE]: Escaped form input
      */
     public function secureFormInput(string $value): string
     {
@@ -104,7 +104,7 @@ class StoredXSS
     }
 
     /**
-     * ❌ VULNERABLE: Store user input without sanitization
+     * [INSECURE] VULNERABLE: Store user input without sanitization
      */
     public function storeCommentVulnerable(string $author, string $content): int
     {
@@ -116,7 +116,7 @@ class StoredXSS
     }
 
     /**
-     * ✅ SECURE: Validate and sanitize before storage
+     * [SECURE]: Validate and sanitize before storage
      */
     public function storeCommentSecure(string $author, string $content): int
     {
@@ -143,7 +143,7 @@ class StoredXSS
     }
 
     /**
-     * ❌ VULNERABLE: Display stored content without escaping
+     * [INSECURE] VULNERABLE: Display stored content without escaping
      */
     public function displayCommentsVulnerable(): string
     {
@@ -165,7 +165,7 @@ class StoredXSS
     }
 
     /**
-     * ✅ SECURE: Display with proper escaping
+     * [SECURE]: Display with proper escaping
      */
     public function displayCommentsSecure(): string
     {
@@ -191,7 +191,7 @@ class StoredXSS
     }
 
     /**
-     * ✅ SECURE: Allow limited HTML with proper sanitization
+     * [SECURE]: Allow limited HTML with proper sanitization
      */
     public function displayCommentsWithHtml(): string
     {
@@ -233,7 +233,7 @@ class StoredXSS
 class DOMBasedXSS
 {
     /**
-     * ❌ VULNERABLE: DOM manipulation with user input
+     * [INSECURE] VULNERABLE: DOM manipulation with user input
      * Attack: #<img src=x onerror=alert('XSS')>
      */
     public function vulnerableDOMDisplay(): string
@@ -250,7 +250,7 @@ class DOMBasedXSS
     }
 
     /**
-     * ✅ SECURE: Sanitize input before DOM manipulation
+     * [SECURE]: Sanitize input before DOM manipulation
      */
     public function secureDOMDisplay(): string
     {
@@ -273,7 +273,7 @@ class DOMBasedXSS
     }
 
     /**
-     * ✅ SECURE: Use textContent instead of innerHTML
+     * [SECURE]: Use textContent instead of innerHTML
      */
     public function secureTextContent(): string
     {

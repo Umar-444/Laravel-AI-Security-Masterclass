@@ -10,23 +10,23 @@
 
 **Keywords**: PHP 8.4 security, Laravel 13 security, web application security, SQL injection, XSS prevention, CSRF protection, secure authentication, Passkeys WebAuthn FIDO2, password security, file upload security, API security, secure deployment, OWASP Top 10 2025, OWASP API Security Top 10 2023, PHP vulnerability, Laravel vulnerability, secure coding practices, web security best practices, penetration testing, security hardening, HTTPS TLS 1.3 configuration, SSL/TLS, security headers, input validation, sanitization, authentication & authorization, session security, rate limiting, firewall configuration, supply chain security, AI security, quantum-safe cryptography.
 
-## 👨‍💻 Author & Contact
+## ‍ Author & Contact
 
 **Umar Farooq** — Senior PHP Laravel Developer | Security Expert | AI Engineer | Technical Writer | Open Source Contributor
 
-- 📧 **Email**: [contact@itsumarfarooq.com](mailto:contact@itsumarfarooq.com)
-- 🌐 **Website**: [itsumarfarooq.com](https://itsumarfarooq.com)
-- 🏢 **Company**: [Worldwebtree.com](https://worldwebtree.com)
-- 💼 **LinkedIn**: [linkedin.com/in/umar444](https://www.linkedin.com/in/umar444)
-- 🐙 **GitHub**: [github.com/umar-444](https://github.com/umar-444)
-- 🐦 **X (Twitter)**: [@umartechtalks](https://x.com/umartechtalks)
-- 🎯 **Specialization**: PHP Laravel Development, Web Application Security, AI in Laravel, Secure Coding Practices and Open Source Contributor 
-- ⚡ **Experience**: 8+ years in PHP development, Laravel architecture, and web security engineering
-- 🔐 **Expertise**: OWASP Top 10 vulnerabilities, Passkeys/WebAuthn, API security, penetration testing, AI security
+- **Email**: [contact@itsumarfarooq.com](mailto:contact@itsumarfarooq.com)
+- **Website**: [itsumarfarooq.com](https://itsumarfarooq.com)
+- **Company**: [Worldwebtree.com](https://worldwebtree.com)
+- **LinkedIn**: [linkedin.com/in/umar444](https://www.linkedin.com/in/umar444)
+- **GitHub**: [github.com/umar-444](https://github.com/umar-444)
+- **X (Twitter)**: [@umartechtalks](https://x.com/umartechtalks)
+- **Specialization**: PHP Laravel Development, Web Application Security, AI in Laravel, Secure Coding Practices and Open Source Contributor 
+- **Experience**: 8+ years in PHP development, Laravel architecture, and web security engineering
+- **Expertise**: OWASP Top 10 vulnerabilities, Passkeys/WebAuthn, API security, penetration testing, AI security
 
 Passionate about helping developers build secure web applications and prevent common security vulnerabilities in PHP and Laravel projects.
 
-## ⚙️ Requirements
+## Requirements
 
 | Requirement | Minimum | Recommended |
 |---|---|---|
@@ -34,38 +34,38 @@ Passionate about helping developers build secure web applications and prevent co
 | Laravel | 11.x | **13.x** |
 | Composer | 2.5 | **2.8+** |
 
-> **⚠️ End-of-Life Notice:** PHP 8.1 reached EOL on November 25, 2024. Laravel 10 reached EOL on February 4, 2025. Do **not** use these in production.
+> **Warning: End-of-Life Notice:** PHP 8.1 reached EOL on November 25, 2024. Laravel 10 reached EOL on February 4, 2025. Do **not** use these in production.
 
 ## Documentation
 
 ### Version 1: Core Security Topics
 
-#### ًں”گ **Secure Coding Basics**
+#### **Secure Coding Basics**
 - **[What is Secure Coding?](docs/SecureCodingBasics.md)** - Understanding secure development principles and attack vectors
 - **[Secure vs Insecure Examples](examples/SecureVsInsecureExamples.php)** - Code examples showing vulnerable vs secure patterns
 
-#### ًں“📜 **Input Handling & Validation**
+#### **Input Handling & Validation**
 - **[Input Validation Guide](docs/InputHandling.md)** - Complete guide to input validation and sanitization
 - **[Input Validation Examples](examples/InputValidationExamples.php)** - Practical validation examples for PHP 8.4 and Laravel 13
 
-#### ًں—„ï¸ڈ **SQL Injection Prevention**
+#### **SQL Injection Prevention**
 - **[SQL Injection Prevention](docs/SQLInjectionPrevention.md)** - Comprehensive guide to preventing SQL injection attacks
 - **[SQL Injection Examples](examples/SQLInjectionExamples.php)** - Vulnerable vs secure database query examples
 
-#### ًں”‘ **Authentication & Password Security**
+#### **Authentication & Password Security**
 - **[Authentication & Password Handling](docs/AuthenticationPasswordHandling.md)** - Complete authentication security guide including Passkeys/WebAuthn
 - **[Secure Login System](examples/PHP/SecureLogin.php)** - Secure authentication implementation
 - **[Advanced Authentication Examples](examples/AuthenticationExamples.php)** - Password hashing, sessions, MFA, and Passkeys
 
-#### ًں“پ **File Upload Security**
+#### **File Upload Security**
 - **[File Upload Security Guide](docs/FileUploadSecurity.md)** - Secure file handling, validation, and storage
 - **[File Upload Security Examples](examples/FileUploadSecurityExamples.php)** - Secure upload implementation patterns
 
-#### ⚙️ **Secure Configuration**
+#### **Secure Configuration**
 - **[Secure Configuration Guide](docs/SecureConfiguration.md)** - .env protection, debug mode, PHP 8.4 security settings
 - **[Secure Configuration Examples](examples/SecureConfigurationExamples.php)** - Secure config and headers implementation
 
-#### ًں›،ï¸ڈ **Advanced Security Topics**
+#### **Advanced Security Topics**
 - **[Session Security](docs/SessionSecurity.md)** - Secure cookies, session ID regeneration, avoiding sensitive data storage
 - **[Session Security Examples](examples/SessionSecurityExamples.php)** - Secure session management patterns
 - **[CSRF Protection](docs/CSRFProtection.md)** - Prevent cross-site request forgery attacks
@@ -74,11 +74,11 @@ Passionate about helping developers build secure web applications and prevent co
 - **[XSS Protection Examples](examples/XSSProtectionExamples.php)** - Output escaping and input sanitization
 - **[Secure Headers Guide](docs/SecureHeaders.md)** - CSP with nonces, HSTS, COEP, COOP, CORP, and modern security headers
 
-#### ًں”— **API Security**
+#### **API Security**
 - **[API Security Basics](docs/APISecurityBasics.md)** - API tokens, rate limiting, OWASP API Security Top 10 (2023), and safe JSON handling
 - **[API Security Examples](examples/APISecurityExamples.php)** - Complete API authentication and security implementation
 
-#### ًںڑ€ **Deployment Security**
+#### **Deployment Security**
 - **[Secure Deployment Guide](docs/SecureDeployment.md)** - TLS 1.3, ECC certificates, file permissions, firewall configuration, and production security
 - **[Secure Deployment Examples](examples/SecureDeploymentExamples.php)** - Deployment scripts, firewall configuration, and security automation
 
@@ -105,13 +105,13 @@ Passionate about helping developers build secure web applications and prevent co
 
 Get started with PHP Laravel security best practices in 5 simple steps:
 
-1. **ًں”چ Security Assessment** - Start with [Security Checklist](docs/Checklist.md) for comprehensive vulnerability assessment and PHP Laravel security audit
-2. **ًں“ڑ Learn Core Security** - Master [PHP Security Fundamentals](docs/PHP.md) and [Laravel Security Features](docs/Laravel.md) for secure web development
-3. **ًں›،ï¸ڈ Prevent Common Attacks** - Learn SQL injection prevention, XSS protection, CSRF defense, and other OWASP Top 10 vulnerabilities
-4. **ًں’» Implement Secure Code** - Use practical examples from the `examples/` directory for secure authentication, Passkeys, file uploads, and API security
-5. **ًںڑ€ Production Security** - Follow [Secure Deployment Guide](docs/SecureDeployment.md) for TLS 1.3 configuration, server hardening, and firewall setup
+1. **Security Assessment** - Start with [Security Checklist](docs/Checklist.md) for comprehensive vulnerability assessment and PHP Laravel security audit
+2. **Learn Core Security** - Master [PHP Security Fundamentals](docs/PHP.md) and [Laravel Security Features](docs/Laravel.md) for secure web development
+3. **Prevent Common Attacks** - Learn SQL injection prevention, XSS protection, CSRF defense, and other OWASP Top 10 vulnerabilities
+4. **Implement Secure Code** - Use practical examples from the `examples/` directory for secure authentication, Passkeys, file uploads, and API security
+5. **Production Security** - Follow [Secure Deployment Guide](docs/SecureDeployment.md) for TLS 1.3 configuration, server hardening, and firewall setup
 
-## ًں”گ Comprehensive Security Topics Covered
+## Comprehensive Security Topics Covered
 
 ### Authentication & Authorization Security
 - **Passkeys / WebAuthn (FIDO2)** - Passwordless authentication with hardware security keys and biometrics
@@ -142,7 +142,7 @@ Get started with PHP Laravel security best practices in 5 simple steps:
 - **API Security** - OWASP API Security Top 10 (2023), rate limiting, token authentication, GraphQL security
 - **AI/LLM Security** - Prompt injection in AI-powered features, LLM threat modeling
 
-## ًںڑ€ Advanced Security Features
+## Advanced Security Features
 
 ### Automated Security Pipeline
 - **Continuous Security Monitoring** - GitHub Actions workflows for automated security scanning and vulnerability detection
@@ -163,7 +163,7 @@ Get started with PHP Laravel security best practices in 5 simple steps:
 - **API Security Framework** - Complete API authentication and authorization systems
 - **Deployment Security Automation** - Scripts for secure server setup and configuration
 
-## ًںژ¯ Why Choose This Security Repository?
+## Why Choose This Security Repository?
 
 ### Trusted by Developers Worldwide
 This comprehensive PHP Laravel security guide has been crafted by experienced developers to provide production-ready solutions for real-world security challenges. Whether you're building e-commerce platforms, SaaS applications, or enterprise systems, this repository offers battle-tested security implementations.
@@ -186,7 +186,7 @@ Every code example and security practice included in this repository is designed
 ### Regular Updates & Community Support
 Stay current with the latest PHP Laravel security threats and mitigation techniques. Join our community of security-conscious developers and contribute to the ongoing improvement of web application security.
 
-## ًںڈ† Perfect For
+## Perfect For
 
 - **PHP Developers** learning secure coding practices with PHP 8.4
 - **Laravel Developers** implementing security in Laravel 13 web applications
@@ -209,7 +209,7 @@ Please read our [Security Policy](SECURITY.md) before submitting security-relate
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## ًں“ˆ SEO Keywords & Search Terms
+## SEO Keywords & Search Terms
 
 **Primary Keywords**: PHP 8.4 security best practices, Laravel 13 security guide, web application security 2026, secure coding PHP, Laravel 13 vulnerability prevention
 
@@ -219,7 +219,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 **Framework Specific**: Laravel Sanctum 4.x, Laravel Gates, Laravel Policies, Laravel 13 middleware (bootstrap/app.php), Eloquent security, Blade templating security, Laravel Reverb WebSocket security
 
-## ⚠️ Important Security Disclaimer
+## Important Security Disclaimer
 
 This repository provides comprehensive PHP Laravel security best practices, code examples, and security implementations. However, security is a complex and constantly evolving field. Always:
 
@@ -233,20 +233,20 @@ This repository provides comprehensive PHP Laravel security best practices, code
 
 ---
 
-## 💬 Get Help & Support
+## Get Help & Support
 
-- 📋 **[Security Checklist](docs/Checklist.md)** — Comprehensive 2026 security assessment guide
-- 🐛 **[Report Issues](https://github.com/Umar-444/Laravel-AI-Security-Masterclass/issues)** — Bug reports and feature requests
-- 🔒 **[Security Policy](SECURITY.md)** — Vulnerability reporting guidelines
-- 📧 **Direct Email**: [contact@itsumarfarooq.com](mailto:contact@itsumarfarooq.com)
-- 🌐 **Personal Website**: [itsumarfarooq.com](https://itsumarfarooq.com)
-- 🏢 **Company**: [Worldwebtree.com](https://worldwebtree.com)
-- 💼 **LinkedIn**: [linkedin.com/in/umar444](https://www.linkedin.com/in/umar444)
-- 🐦 **X (Twitter)**: [@umartechtalks](https://x.com/umartechtalks)
-- 🐙 **GitHub Profile**: [github.com/umar-444](https://github.com/umar-444)
+- **[Security Checklist](docs/Checklist.md)** — Comprehensive 2026 security assessment guide
+- **[Report Issues](https://github.com/Umar-444/Laravel-AI-Security-Masterclass/issues)** — Bug reports and feature requests
+- **[Security Policy](SECURITY.md)** — Vulnerability reporting guidelines
+- **Direct Email**: [contact@itsumarfarooq.com](mailto:contact@itsumarfarooq.com)
+- **Personal Website**: [itsumarfarooq.com](https://itsumarfarooq.com)
+- **Company**: [Worldwebtree.com](https://worldwebtree.com)
+- **LinkedIn**: [linkedin.com/in/umar444](https://www.linkedin.com/in/umar444)
+- **X (Twitter)**: [@umartechtalks](https://x.com/umartechtalks)
+- **GitHub Profile**: [github.com/umar-444](https://github.com/umar-444)
 
 ---
 
-**Built with ❤️ by [Umar Farooq](https://itsumarfarooq.com) for the PHP Laravel community**
+**Built by [Umar Farooq](https://itsumarfarooq.com) for the PHP Laravel community**
 
 *Last Updated: October 2026 — Laravel 13 / PHP 8.4*

@@ -607,53 +607,53 @@ class SecureApiKeyManager
 
 set -e  # Exit on any error
 
-echo "🚀 Starting secure deployment..."
+echo " Starting secure deployment..."
 
 # Check environment
 if [ "$ENVIRONMENT" != "production" ]; then
-    echo "❌ This script should only run in production"
+    echo "[INSECURE] This script should only run in production"
     exit 1
 fi
 
 # Validate configuration
-echo "🔍 Validating configuration..."
+echo " Validating configuration..."
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
 # Check for security issues
-echo "🛡️ Running security checks..."
+echo " Running security checks..."
 if php artisan tinker --execute="echo app()->environment()" | grep -q "production"; then
-    echo "✅ Environment correctly set to production"
+    echo "[SECURE] Environment correctly set to production"
 else
-    echo "❌ Environment not set to production"
+    echo "[INSECURE] Environment not set to production"
     exit 1
 fi
 
 # Set secure permissions
-echo "🔒 Setting secure permissions..."
+echo " Setting secure permissions..."
 find . -type f -name "*.php" -exec chmod 644 {} \;
 find . -type d -exec chmod 755 {} \;
 chmod 600 .env
 chmod 600 storage/logs/*.log
 
 # Clear sensitive caches
-echo "🧹 Clearing sensitive data..."
+echo " Clearing sensitive data..."
 php artisan config:clear
 php artisan cache:clear
 php artisan view:clear
 
 # Health check
-echo "🏥 Running health checks..."
+echo " Running health checks..."
 curl -f -s http://localhost/health-check > /dev/null
 if [ $? -eq 0 ]; then
-    echo "✅ Application health check passed"
+    echo "[SECURE] Application health check passed"
 else
-    echo "❌ Application health check failed"
+    echo "[INSECURE] Application health check failed"
     exit 1
 fi
 
-echo "🎉 Secure deployment completed successfully!"
+echo " Secure deployment completed successfully!"
 ```
 
 ### Configuration Validation
@@ -672,7 +672,7 @@ class ValidateConfig extends Command
 
     public function handle()
     {
-        $this->info('🔍 Validating configuration security...');
+        $this->info(' Validating configuration security...');
 
         $issues = [];
 
@@ -698,12 +698,12 @@ class ValidateConfig extends Command
 
         // Report issues
         if (empty($issues)) {
-            $this->info('✅ All configuration checks passed!');
+            $this->info('[SECURE] All configuration checks passed!');
             return 0;
         }
 
         foreach ($issues as $issue) {
-            $this->error("❌ {$issue}");
+            $this->error("[INSECURE] {$issue}");
         }
 
         return 1;

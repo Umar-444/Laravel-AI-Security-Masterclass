@@ -1,4 +1,4 @@
-# Security Checklist â€” 2026 Edition
+# Security Checklist — 2026 Edition
 ## PHP 8.4 / Laravel 13
 
 > Last updated: October 2026. Updated for NIST SP 800-63B (2024), OWASP Top 10 (2025), and OWASP API Security Top 10 (2023).
@@ -13,15 +13,15 @@
 - [ ] Establish mandatory code review processes for all PRs
 - [ ] Set up dependency scanning tools (`composer audit --locked` in CI/CD)
 - [ ] Generate Software Bill of Materials (SBOM) for supply chain tracking
-- [ ] Confirm PHP version is 8.2+ (8.4 recommended) â€” PHP 8.1 is EOL
-- [ ] Confirm Laravel version is 11+ (13 recommended) â€” Laravel 10 is EOL
+- [ ] Confirm PHP version is 8.2+ (8.4 recommended) — PHP 8.1 is EOL
+- [ ] Confirm Laravel version is 11+ (13 recommended) — Laravel 10 is EOL
 
 ---
 
 ## Authentication & Authorization
 
-- [ ] Implement secure password policies â€” **minimum 15 characters** (NIST SP 800-63B 2024)
-- [ ] Use `password_hash()` with `PASSWORD_ARGON2ID` â€” OWASP 2024 parameters (`memory_cost=65536, time_cost=3, threads=1`)
+- [ ] Implement secure password policies — **minimum 15 characters** (NIST SP 800-63B 2024)
+- [ ] Use `password_hash()` with `PASSWORD_ARGON2ID` — OWASP 2024 parameters (`memory_cost=65536, time_cost=3, threads=1`)
 - [ ] Never use `md5()`, `sha1()`, or `rand()` for any security-sensitive purpose
 - [ ] Auto-rehash passwords on login when parameters change (`password_needs_rehash()`)
 - [ ] Implement **Passkeys / WebAuthn (FIDO2)** as the preferred passwordless option
@@ -29,8 +29,8 @@
 - [ ] Set up secure session management (see session checklist below)
 - [ ] Configure secure cookie settings: `Secure`, `HttpOnly`, `SameSite=Strict`
 - [ ] Use `session.use_strict_mode = 1` to reject unrecognized session IDs
-- [ ] Implement proper logout â€” invalidate session and clear cookies
-- [ ] Session name must use `hash('sha256', ...)` â€” **never `md5()`**
+- [ ] Implement proper logout — invalidate session and clear cookies
+- [ ] Session name must use `hash('sha256', ...)` — **never `md5()`**
 - [ ] Set up role-based access control (RBAC) with Laravel Gates and Policies
 - [ ] Implement timing-safe comparison for all credential checks
 
@@ -38,10 +38,10 @@
 
 ## Input Validation & Sanitization
 
-- [ ] Validate ALL user inputs server-side â€” never trust client-side validation alone
+- [ ] Validate ALL user inputs server-side — never trust client-side validation alone
 - [ ] Use allowlists (not blocklists) for validation
-- [ ] Sanitize output based on context: HTML â†’ `htmlspecialchars(ENT_QUOTES|ENT_SUBSTITUTE|ENT_HTML5)`, SQL â†’ prepared statements, shell â†’ `escapeshellarg()`
-- [ ] Use parameterized queries / prepared statements â€” zero string concatenation in SQL
+- [ ] Sanitize output based on context: HTML -> `htmlspecialchars(ENT_QUOTES|ENT_SUBSTITUTE|ENT_HTML5)`, SQL -> prepared statements, shell -> `escapeshellarg()`
+- [ ] Use parameterized queries / prepared statements — zero string concatenation in SQL
 - [ ] Implement CSRF protection (Laravel's built-in CSRF + `SameSite=Strict`)
 - [ ] Set up rate limiting on all forms, APIs, and login endpoints
 - [ ] Use PHP 8.4 typed enums for restricted value sets
@@ -62,9 +62,9 @@
 
 ## Database Security
 
-- [ ] Use prepared statements for ALL queries â€” including `IN()`, `LIKE`, `ORDER BY`
-- [ ] Implement proper database user permissions â€” principle of least privilege
-- [ ] Encrypt sensitive data at rest â€” use Laravel's `encrypted` cast
+- [ ] Use prepared statements for ALL queries — including `IN()`, `LIKE`, `ORDER BY`
+- [ ] Implement proper database user permissions — principle of least privilege
+- [ ] Encrypt sensitive data at rest — use Laravel's `encrypted` cast
 - [ ] Enable TLS for database connections (`PDO::MYSQL_ATTR_SSL_CA`)
 - [ ] Use database-level constraints (UNIQUE, NOT NULL, FK)
 - [ ] Implement proper indexing for performance and security
@@ -73,28 +73,28 @@
 
 ---
 
-## API Security (OWASP API Security Top 10 â€” 2023)
+## API Security (OWASP API Security Top 10 — 2023)
 
-- [ ] **API1:2023** â€” Broken Object Level Authorization: Validate object ownership on every request
-- [ ] **API2:2023** â€” Broken Authentication: Use Sanctum 4.x / Passport â€” no custom token schemes
-- [ ] **API3:2023** â€” Broken Object Property Level Authorization: Use `$fillable` â€” never `$guarded = []`
-- [ ] **API4:2023** â€” Unrestricted Resource Consumption: Rate limiting on all endpoints
-- [ ] **API5:2023** â€” Broken Function Level Authorization: Verify role/ability on every action
-- [ ] **API6:2023** â€” Unrestricted Access to Sensitive Business Flows: Multi-step flow protection
-- [ ] **API7:2023** â€” Server Side Request Forgery (SSRF): Validate and allowlist all outbound URLs
-- [ ] **API8:2023** â€” Security Misconfiguration: Disable debug mode, hide version headers
-- [ ] **API9:2023** â€” Improper Inventory Management: Document and version all API endpoints
-- [ ] **API10:2023** â€” Unsafe Consumption of APIs: Validate and sanitize all third-party API responses
+- [ ] **API1:2023** — Broken Object Level Authorization: Validate object ownership on every request
+- [ ] **API2:2023** — Broken Authentication: Use Sanctum 4.x / Passport — no custom token schemes
+- [ ] **API3:2023** — Broken Object Property Level Authorization: Use `$fillable` — never `$guarded = []`
+- [ ] **API4:2023** — Unrestricted Resource Consumption: Rate limiting on all endpoints
+- [ ] **API5:2023** — Broken Function Level Authorization: Verify role/ability on every action
+- [ ] **API6:2023** — Unrestricted Access to Sensitive Business Flows: Multi-step flow protection
+- [ ] **API7:2023** — Server Side Request Forgery (SSRF): Validate and allowlist all outbound URLs
+- [ ] **API8:2023** — Security Misconfiguration: Disable debug mode, hide version headers
+- [ ] **API9:2023** — Improper Inventory Management: Document and version all API endpoints
+- [ ] **API10:2023** — Unsafe Consumption of APIs: Validate and sanitize all third-party API responses
 - [ ] Implement API versioning (`/api/v1/`, `/api/v2/`)
-- [ ] Use HTTPS for all API calls â€” TLS 1.3 preferred
-- [ ] Validate and sanitize all JSON input â€” reject unexpected fields
+- [ ] Use HTTPS for all API calls — TLS 1.3 preferred
+- [ ] Validate and sanitize all JSON input — reject unexpected fields
 - [ ] Set up structured API logging
 
 ---
 
 ## Security Headers (2026 Standard)
 
-- [ ] `Content-Security-Policy` with nonces â€” **no `unsafe-inline`**, **no `unsafe-eval`**
+- [ ] `Content-Security-Policy` with nonces — **no `unsafe-inline`**, **no `unsafe-eval`**
 - [ ] `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload`
 - [ ] `X-Frame-Options: DENY` (or CSP `frame-ancestors 'none'`)
 - [ ] `X-Content-Type-Options: nosniff`
@@ -103,21 +103,21 @@
 - [ ] `Cross-Origin-Opener-Policy: same-origin`
 - [ ] `Cross-Origin-Embedder-Policy: require-corp`
 - [ ] `Cross-Origin-Resource-Policy: same-origin`
-- [ ] `Reporting-Endpoints` (CSP violation reporting â€” replaces deprecated `report-uri`)
-- [ ] ~~`X-XSS-Protection`~~ â€” â›” **DEPRECATED** â€” Remove from all headers
-- [ ] Register middleware in `bootstrap/app.php` (Laravel 11+) â€” `Kernel.php` was removed
+- [ ] `Reporting-Endpoints` (CSP violation reporting — replaces deprecated `report-uri`)
+- [ ] ~~`X-XSS-Protection`~~ — [DEPRECATED] **DEPRECATED** — Remove from all headers
+- [ ] Register middleware in `bootstrap/app.php` (Laravel 11+) — `Kernel.php` was removed
 - [ ] Test headers at [securityheaders.com](https://securityheaders.com)
 
 ---
 
 ## Configuration Security
 
-- [ ] `APP_DEBUG=false` in production â€” never expose stack traces
-- [ ] Store ALL secrets in environment variables â€” never in code
+- [ ] `APP_DEBUG=false` in production — never expose stack traces
+- [ ] Store ALL secrets in environment variables — never in code
 - [ ] Use a secrets manager in production (HashiCorp Vault, AWS SSM, Azure Key Vault)
 - [ ] Use environment variables for DB credentials, API keys, mail passwords
 - [ ] Set up proper CORS policies (`cors.php` in Laravel)
-- [ ] Implement HTTPS redirect â€” TLS 1.3 preferred, TLS 1.2 minimum
+- [ ] Implement HTTPS redirect — TLS 1.3 preferred, TLS 1.2 minimum
 - [ ] Remove `X-Powered-By` and `Server` response headers
 - [ ] Disable PHP version exposure (`expose_php = Off` in `php.ini`)
 - [ ] Set `opcache.validate_timestamps=0` in production (performance + security)
@@ -126,13 +126,13 @@
 
 ## Error Handling & Logging
 
-- [ ] Implement proper error handling â€” never expose DB errors, stack traces, or file paths
+- [ ] Implement proper error handling — never expose DB errors, stack traces, or file paths
 - [ ] Use custom error pages for 404, 403, 500 (no framework branding)
 - [ ] Set up structured logging (Monolog with JSON formatter, or Sentry)
 - [ ] Monitor for authentication failures, CSRF violations, and rate limit triggers
 - [ ] Implement log rotation and retention policy
 - [ ] Set up alerts for suspicious activities (repeated auth failures, unusual traffic)
-- [ ] Store logs outside the web root â€” never publicly accessible
+- [ ] Store logs outside the web root — never publicly accessible
 
 ---
 
@@ -148,7 +148,7 @@
 
 ---
 
-## Passkeys / WebAuthn (FIDO2) â€” 2026 Standard
+## Passkeys / WebAuthn (FIDO2) — 2026 Standard
 
 - [ ] Implement WebAuthn/FIDO2 as the primary authentication option
 - [ ] Use a vetted library: `web-auth/webauthn-framework` (PHP) or `laragear/webauthn` (Laravel)
@@ -162,10 +162,10 @@
 ## Infrastructure Security
 
 - [ ] Use secure server configurations (CIS Benchmarks for Ubuntu/Debian)
-- [ ] Implement firewall rules (UFW or nftables) â€” allowlist only required ports
+- [ ] Implement firewall rules (UFW or nftables) — allowlist only required ports
 - [ ] Set up Fail2Ban for brute force protection
 - [ ] Configure SSL/TLS: TLS 1.3 preferred, TLS 1.2 minimum
-- [ ] Use ECDSA P-256 certificates (or RSA-4096 minimum â€” RSA-2048 is marginal per NIST 2024)
+- [ ] Use ECDSA P-256 certificates (or RSA-4096 minimum — RSA-2048 is marginal per NIST 2024)
 - [ ] Implement regular automated backups with encryption at rest
 - [ ] Set up uptime and anomaly monitoring
 
@@ -184,7 +184,7 @@
 
 ## Deployment Security (CI/CD)
 
-- [ ] Secure deployment pipeline â€” no secrets in environment variables of CI logs
+- [ ] Secure deployment pipeline — no secrets in environment variables of CI logs
 - [ ] Use Infrastructure as Code (Terraform / Pulumi) with security scanning
 - [ ] Implement secrets management in CI/CD (GitHub Actions Secrets, Vault)
 - [ ] Set up staging environments that mirror production security settings
@@ -211,7 +211,7 @@
 - [ ] Understand applicable regulatory requirements (GDPR, HIPAA, PCI DSS 4.0)
 - [ ] Implement compliance controls aligned with requirements
 - [ ] Set up data retention and deletion policies (GDPR right to erasure)
-- [ ] Implement privacy protections â€” data minimization, purpose limitation
+- [ ] Implement privacy protections — data minimization, purpose limitation
 - [ ] Schedule regular compliance audits
 - [ ] Document all security measures for audit trail
 

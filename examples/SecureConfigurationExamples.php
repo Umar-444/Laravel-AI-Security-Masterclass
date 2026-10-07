@@ -472,7 +472,7 @@ class SecureErrorHandler
 </head>
 <body>
     <div class="error-container">
-        <div class="error-icon">⚠️</div>
+        <div class="error-icon">Warning:</div>
         <h1 class="error-title">Oops! Something went wrong</h1>
         <p class="error-message">
             We encountered an unexpected error while processing your request.
@@ -736,15 +736,15 @@ class ServerSecurity
     {
         $issues = self::validateSecurityConfig();
 
-        $report = "🔍 Server Security Report\n";
+        $report = " Server Security Report\n";
         $report .= "Generated: " . date('Y-m-d H:i:s') . "\n";
         $report .= "Environment: " . (getenv('APP_ENV') ?: 'unknown') . "\n";
         $report .= "Server: " . ($_SERVER['SERVER_SOFTWARE'] ?? 'unknown') . "\n\n";
 
         if (empty($issues)) {
-            $report .= "✅ All security checks passed!\n";
+            $report .= "[SECURE] All security checks passed!\n";
         } else {
-            $report .= "❌ Security issues found:\n";
+            $report .= "[INSECURE] Security issues found:\n";
             foreach ($issues as $issue) {
                 $report .= "  - {$issue}\n";
             }

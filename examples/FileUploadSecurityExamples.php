@@ -15,7 +15,7 @@ declare(strict_types=1);
 class FileUploadVulnerabilities
 {
     /**
-     * ❌ EXTREMELY VULNERABLE: No validation, direct storage in web root
+     * [INSECURE] EXTREMELY VULNERABLE: No validation, direct storage in web root
      * Allows any file type, any size, stored in accessible location
      */
     public function uploadFileVulnerable(): string
@@ -40,7 +40,7 @@ class FileUploadVulnerabilities
     }
 
     /**
-     * ❌ VULNERABLE: Basic extension check only
+     * [INSECURE] VULNERABLE: Basic extension check only
      * Can be bypassed with double extensions, null bytes, etc.
      */
     public function uploadFileWeakValidation(): string
@@ -72,7 +72,7 @@ class FileUploadVulnerabilities
     }
 
     /**
-     * ❌ VULNERABLE: MIME type spoofing
+     * [INSECURE] VULNERABLE: MIME type spoofing
      * MIME types from $_FILES can be easily spoofed
      */
     public function uploadFileMimeSpoofing(): string
@@ -104,7 +104,7 @@ class FileUploadVulnerabilities
     }
 
     /**
-     * ❌ VULNERABLE: Directory traversal attack
+     * [INSECURE] VULNERABLE: Directory traversal attack
      * Allows accessing files outside upload directory
      */
     public function uploadFileDirectoryTraversal(): string
@@ -163,7 +163,7 @@ class SecureFileUpload
     }
 
     /**
-     * ✅ SECURE: Complete file upload validation and storage
+     * [SECURE]: Complete file upload validation and storage
      */
     public function uploadFileSecure(array $file): array
     {

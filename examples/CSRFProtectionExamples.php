@@ -22,7 +22,7 @@ class CSRFVulnerabilities
     }
 
     /**
-     * ❌ VULNERABLE: No CSRF protection
+     * [INSECURE] VULNERABLE: No CSRF protection
      * Attacker can create a form that submits to this endpoint
      */
     public function transferMoneyVulnerable(): void
@@ -43,7 +43,7 @@ class CSRFVulnerabilities
     }
 
     /**
-     * ❌ VULNERABLE: GET-based CSRF
+     * [INSECURE] VULNERABLE: GET-based CSRF
      * Even worse - can be triggered by <img src="..."> tags
      */
     public function deleteAccountVulnerable(): void
@@ -58,7 +58,7 @@ class CSRFVulnerabilities
     }
 
     /**
-     * ❌ VULNERABLE: Weak CSRF "protection"
+     * [INSECURE] VULNERABLE: Weak CSRF "protection"
      * Using Referer header (easily spoofed)
      */
     public function updateProfileVulnerable(): void
@@ -225,7 +225,7 @@ class SecureController
     }
 
     /**
-     * ✅ SECURE: Transfer money with CSRF protection
+     * [SECURE]: Transfer money with CSRF protection
      */
     public function transferMoney(): void
     {
@@ -246,7 +246,7 @@ class SecureController
     }
 
     /**
-     * ✅ SECURE: Update profile with CSRF protection
+     * [SECURE]: Update profile with CSRF protection
      */
     public function updateProfile(): void
     {
@@ -517,7 +517,7 @@ class LaravelSecureController extends Controller
      */
 
     /**
-     * ✅ SECURE: Transfer money (Laravel CSRF protection active)
+     * [SECURE]: Transfer money (Laravel CSRF protection active)
      */
     public function transferMoney(Request $request)
     {
@@ -556,7 +556,7 @@ class LaravelSecureController extends Controller
     }
 
     /**
-     * ✅ SECURE: Update profile with additional validation
+     * [SECURE]: Update profile with additional validation
      */
     public function updateProfile(Request $request)
     {

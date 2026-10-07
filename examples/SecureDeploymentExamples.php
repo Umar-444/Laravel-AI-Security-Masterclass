@@ -70,7 +70,7 @@ DNS.2 = www.{$domain}
         // Clean up config file
         unlink($outputDir . '/openssl.cnf');
 
-        echo "✅ Self-signed certificate generated successfully\n";
+        echo "[SECURE] Self-signed certificate generated successfully\n";
         echo "Key: {$keyFile}\n";
         echo "Certificate: {$certFile}\n";
     }
@@ -204,7 +204,7 @@ class SecureFilePermissions
      */
     public function setLaravelPermissions(): void
     {
-        $this->log("🔒 Setting Laravel permissions for {$this->webRoot}");
+        $this->log(" Setting Laravel permissions for {$this->webRoot}");
 
         // Set ownership
         $this->setOwnership($this->webRoot, $this->webUser, $this->webGroup);
@@ -226,7 +226,7 @@ class SecureFilePermissions
         // Make artisan executable
         $this->setExecutablePermissions("{$this->webRoot}/artisan", 0755);
 
-        $this->log("✅ Laravel permissions set successfully");
+        $this->log("[SECURE] Laravel permissions set successfully");
     }
 
     /**
@@ -236,7 +236,7 @@ class SecureFilePermissions
     {
         $issues = [];
 
-        $this->log("🔍 Auditing file permissions...");
+        $this->log(" Auditing file permissions...");
 
         // Check .env file
         $envFile = $this->webRoot . '/.env';
@@ -279,17 +279,17 @@ class SecureFilePermissions
         $issues = $this->auditPermissions();
 
         if (empty($issues)) {
-            $this->log("✅ No permission issues found");
+            $this->log("[SECURE] No permission issues found");
             return;
         }
 
-        $this->log("🔧 Fixing permission issues...");
+        $this->log(" Fixing permission issues...");
 
         // Fix .env permissions
         $envFile = $this->webRoot . '/.env';
         if (file_exists($envFile)) {
             chmod($envFile, 0600);
-            $this->log("✅ Fixed .env permissions");
+            $this->log("[SECURE] Fixed .env permissions");
         }
 
         // Fix world-writable files
@@ -298,14 +298,14 @@ class SecureFilePermissions
             chmod($file, 0644);
         }
         if (!empty($worldWritable)) {
-            $this->log("✅ Fixed " . count($worldWritable) . " world-writable files");
+            $this->log("[SECURE] Fixed " . count($worldWritable) . " world-writable files");
         }
 
         // Fix ownership
         $this->setOwnership($this->webRoot, $this->webUser, $this->webGroup);
-        $this->log("✅ Fixed file ownership");
+        $this->log("[SECURE] Fixed file ownership");
 
-        $this->log("🎉 Permission issues resolved");
+        $this->log(" Permission issues resolved");
     }
 
     private function setOwnership(string $path, string $user, string $group): void
@@ -411,7 +411,7 @@ class FirewallManager
             throw new RuntimeException('Failed to enable UFW');
         }
 
-        echo "✅ UFW firewall configured successfully\n";
+        echo "[SECURE] UFW firewall configured successfully\n";
     }
 
     /**
@@ -482,7 +482,7 @@ class FirewallManager
         // Save rules
         exec('sudo iptables-save > /etc/iptables/rules.v4', $output, $returnVar);
 
-        echo "✅ iptables firewall configured successfully\n";
+        echo "[SECURE] iptables firewall configured successfully\n";
     }
 
     /**
@@ -532,7 +532,7 @@ maxretry = 2
         // Restart Fail2Ban
         exec('sudo systemctl restart fail2ban', $output, $returnVar);
 
-        echo "✅ Fail2Ban configured successfully\n";
+        echo "[SECURE] Fail2Ban configured successfully\n";
     }
 }
 
@@ -562,7 +562,7 @@ class DeploymentSecurity
      */
     public function deploy(array $deploymentData): bool
     {
-        $this->log("🚀 Starting secure deployment...");
+        $this->log(" Starting secure deployment...");
 
         try {
             // Pre-deployment checks
@@ -588,11 +588,11 @@ class DeploymentSecurity
             // Log successful deployment
             $this->logDeployment($deploymentData, 'success');
 
-            $this->log("🎉 Deployment completed successfully!");
+            $this->log(" Deployment completed successfully!");
             return true;
 
         } catch (Exception $e) {
-            $this->log("❌ Deployment failed: " . $e->getMessage());
+            $this->log("[INSECURE] Deployment failed: " . $e->getMessage());
 
             // Attempt rollback
             $this->rollback($backupPath);
@@ -606,7 +606,7 @@ class DeploymentSecurity
 
     private function runPreDeploymentChecks(): void
     {
-        $this->log("🔍 Running pre-deployment checks...");
+        $this->log(" Running pre-deployment checks...");
 
         // Check available disk space
         $availableSpace = disk_free_space('/') / 1024 / 1024; // MB
@@ -627,12 +627,12 @@ class DeploymentSecurity
             }
         }
 
-        $this->log("✅ Pre-deployment checks passed");
+        $this->log("[SECURE] Pre-deployment checks passed");
     }
 
     private function createBackup(): string
     {
-        $this->log("💾 Creating backup...");
+        $this->log(" Creating backup...");
 
         $timestamp = date('Y-m-d_H-i-s');
         $backupPath = $this->backupDir . '/backup_' . $timestamp;
@@ -648,13 +648,13 @@ class DeploymentSecurity
             throw new RuntimeException('Failed to create backup');
         }
 
-        $this->log("✅ Backup created: {$backupPath}");
+        $this->log("[SECURE] Backup created: {$backupPath}");
         return $backupPath;
     }
 
     private function deployApplication(array $deploymentData): void
     {
-        $this->log("📦 Deploying application...");
+        $this->log(" Deploying application...");
 
         $sourceDir = $deploymentData['source_dir'] ?? '/tmp/deployment';
 
@@ -671,7 +671,7 @@ class DeploymentSecurity
             throw new RuntimeException('Failed to copy application files');
         }
 
-        $this->log("✅ Application deployed");
+        $this->log("[SECURE] Application deployed");
     }
 
     private function preserveDataDuringDeployment(): void
@@ -691,17 +691,17 @@ class DeploymentSecurity
 
     private function setSecurePermissions(): void
     {
-        $this->log("🔒 Setting secure permissions...");
+        $this->log(" Setting secure permissions...");
 
         $permissions = new SecureFilePermissions($this->projectRoot);
         $permissions->setLaravelPermissions();
 
-        $this->log("✅ Permissions set");
+        $this->log("[SECURE] Permissions set");
     }
 
     private function runPostDeploymentTasks(): void
     {
-        $this->log("⚙️ Running post-deployment tasks...");
+        $this->log(" Running post-deployment tasks...");
 
         $oldDir = getcwd();
         chdir($this->projectRoot);
@@ -740,12 +740,12 @@ class DeploymentSecurity
             chdir($oldDir);
         }
 
-        $this->log("✅ Post-deployment tasks completed");
+        $this->log("[SECURE] Post-deployment tasks completed");
     }
 
     private function runHealthCheck(): bool
     {
-        $this->log("🏥 Running health checks...");
+        $this->log(" Running health checks...");
 
         $url = $this->config['health_check_url'];
         $context = stream_context_create([
@@ -767,7 +767,7 @@ class DeploymentSecurity
 
     private function rollback(string $backupPath): void
     {
-        $this->log("🔄 Rolling back deployment...");
+        $this->log(" Rolling back deployment...");
 
         try {
             // Remove failed deployment
@@ -780,10 +780,10 @@ class DeploymentSecurity
             $permissions = new SecureFilePermissions($this->projectRoot);
             $permissions->setLaravelPermissions();
 
-            $this->log("✅ Rollback completed");
+            $this->log("[SECURE] Rollback completed");
 
         } catch (Exception $e) {
-            $this->log("❌ Rollback failed: " . $e->getMessage());
+            $this->log("[INSECURE] Rollback failed: " . $e->getMessage());
             throw new RuntimeException('Rollback failed: ' . $e->getMessage());
         }
     }
@@ -814,7 +814,7 @@ class DeploymentSecurity
      */
     public function cleanupOldBackups(): void
     {
-        $this->log("🧹 Cleaning up old backups...");
+        $this->log(" Cleaning up old backups...");
 
         if (!is_dir($this->backupDir)) {
             return;
@@ -838,7 +838,7 @@ class DeploymentSecurity
             }
         }
 
-        $this->log("✅ Removed {$removed} old backups");
+        $this->log("[SECURE] Removed {$removed} old backups");
     }
 
     private function log(string $message): void

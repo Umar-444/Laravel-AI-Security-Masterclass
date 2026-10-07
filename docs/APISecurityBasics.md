@@ -20,7 +20,7 @@ APIs are the backbone of modern web applications, enabling communication between
 
 ---
 
-## 🔴 OWASP API Security Top 10 — 2023 Edition
+## [CRITICAL] OWASP API Security Top 10 — 2023 Edition
 
 > The **2019 list is outdated**. Use the **2023 edition** for all security reviews.
 
@@ -52,13 +52,13 @@ class InvoiceController extends Controller
     {
         $invoice = Invoice::findOrFail($invoiceId);
 
-        // ✅ Always authorize ownership — NEVER just find by ID
+        // [SECURE] Always authorize ownership — NEVER just find by ID
         $this->authorize('view', $invoice);
 
         return response()->json($invoice);
     }
 
-    // ❌ VULNERABLE — no ownership check
+    // [INSECURE] VULNERABLE — no ownership check
     public function showVulnerable(int $invoiceId)
     {
         return Invoice::findOrFail($invoiceId); // Any user can access any invoice
@@ -73,10 +73,10 @@ class InvoiceController extends Controller
 // app/Models/User.php
 class User extends Model
 {
-    // ✅ Explicit allowlist — only these fields can be mass-assigned
+    // [SECURE] Explicit allowlist — only these fields can be mass-assigned
     protected $fillable = ['name', 'email', 'password'];
 
-    // ❌ These fields are protected and never in $fillable:
+    // [INSECURE] These fields are protected and never in $fillable:
     // 'is_admin', 'role', 'email_verified_at', 'two_factor_secret'
 }
 
@@ -86,7 +86,7 @@ public function update(Request $request)
     $validated = $request->validate([
         'name'  => ['required', 'string', 'max:255'],
         'email' => ['required', 'email:rfc,dns'],
-        // ✅ Never accept 'is_admin', 'role', or sensitive fields from input
+        // [SECURE] Never accept 'is_admin', 'role', or sensitive fields from input
     ]);
 
     auth()->user()->update($validated);
@@ -126,7 +126,7 @@ use Illuminate\Support\Facades\Http;
 
 class ExternalApiService
 {
-    // ✅ Allowlist of permitted external domains
+    // [SECURE] Allowlist of permitted external domains
     private const ALLOWED_HOSTS = [
         'api.stripe.com',
         'api.sendgrid.com',
@@ -137,7 +137,7 @@ class ExternalApiService
     {
         $parsed = parse_url($url);
 
-        // ✅ Block private/internal IPs
+        // [SECURE] Block private/internal IPs
         if (filter_var($parsed['host'] ?? '', FILTER_VALIDATE_IP)) {
             $ip = $parsed['host'];
             if (
@@ -147,12 +147,12 @@ class ExternalApiService
             }
         }
 
-        // ✅ Only allowlisted domains
+        // [SECURE] Only allowlisted domains
         if (!in_array($parsed['host'] ?? '', self::ALLOWED_HOSTS, true)) {
             throw new \InvalidArgumentException("Host not in allowlist: {$parsed['host']}");
         }
 
-        // ✅ HTTPS only
+        // [SECURE] HTTPS only
         if (($parsed['scheme'] ?? '') !== 'https') {
             throw new \InvalidArgumentException('Only HTTPS URLs are permitted');
         }

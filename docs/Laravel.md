@@ -17,7 +17,7 @@ php artisan install:api
 
 ### Middleware Registration — `bootstrap/app.php` (Laravel 11+)
 
-> ⚠️ **`app/Http/Kernel.php` was removed in Laravel 11.** All middleware must now be registered in `bootstrap/app.php`.
+> Warning: **`app/Http/Kernel.php` was removed in Laravel 11.** All middleware must now be registered in `bootstrap/app.php`.
 
 ```php
 <?php
@@ -82,10 +82,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
-    // ✅ Explicit allowlist
+    // [SECURE] Explicit allowlist
     protected $fillable = ['name', 'email', 'password'];
 
-    // ❌ NEVER do this — mass assignment vulnerability
+    // [INSECURE] NEVER do this — mass assignment vulnerability
     // protected $guarded = [];
 }
 ```
@@ -98,19 +98,19 @@ class User extends Model
 
 ```php
 <?php
-// ✅ Eloquent — auto-escaped
+// [SECURE] Eloquent — auto-escaped
 $user = User::where('email', $email)->first();
 
-// ✅ Query Builder — parameterized
+// [SECURE] Query Builder — parameterized
 $users = DB::table('users')
     ->where('role', $role)
     ->where('active', true)
     ->get();
 
-// ✅ Raw query with binding (when needed)
+// [SECURE] Raw query with binding (when needed)
 $results = DB::select('SELECT * FROM users WHERE email = ?', [$email]);
 
-// ❌ NEVER — SQL injection vulnerability
+// [INSECURE] NEVER — SQL injection vulnerability
 $results = DB::select("SELECT * FROM users WHERE email = '$email'");
 ```
 
@@ -121,13 +121,13 @@ $results = DB::select("SELECT * FROM users WHERE email = '$email'");
 - Implement strict CSP with nonces (see [Secure Headers](SecureHeaders.md))
 
 ```blade
-{{-- ✅ Safe — auto-escaped --}}
+{{-- Safe — auto-escaped --}}
 {{ $user->name }}
 
-{{-- ⚠️ Only for pre-sanitized HTML (use with caution) --}}
+{{-- Warning: Only for pre-sanitized HTML (use with caution) --}}
 {!! $sanitizedHtml !!}
 
-{{-- ✅ Blade components auto-escape attributes --}}
+{{-- Blade components auto-escape attributes --}}
 <x-user-card :name="$user->name" />
 ```
 
@@ -282,7 +282,7 @@ RateLimiter::for('login', function (Request $request) {
 ```php
 // .env — production essentials
 APP_ENV=production
-APP_DEBUG=false          // ⚠️ NEVER true in production
+APP_DEBUG=false          // Warning: NEVER true in production
 APP_KEY=base64:...       // Must be set — used for encryption
 
 // Laravel 13: use secrets manager for sensitive values
@@ -325,7 +325,7 @@ APP_KEY=base64:...       // Must be set — used for encryption
     'charset'   => 'utf8mb4',
     'collation' => 'utf8mb4_unicode_ci',
     'options'   => [
-        // ✅ Encrypted DB connection
+        // [SECURE] Encrypted DB connection
         PDO::MYSQL_ATTR_SSL_CA      => env('DB_SSL_CA'),
         PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => true,
         PDO::ATTR_EMULATE_PREPARES  => false,  // Disable emulated prepares
@@ -338,8 +338,8 @@ APP_KEY=base64:...       // Must be set — used for encryption
 
 | Version | Status | EOL Date |
 |---|---|---|
-| Laravel 13 | ✅ Current | August 2027 (security: Feb 2028) |
-| Laravel 12 | ✅ Active LTS | February 2027 (security: Feb 2028) |
-| Laravel 11 | ✅ Supported | September 2026 |
-| Laravel 10 | ❌ EOL | February 4, 2025 |
-| Laravel 9 | ❌ EOL | February 8, 2024 |
+| Laravel 13 | [SECURE] Current | August 2027 (security: Feb 2028) |
+| Laravel 12 | [SECURE] Active LTS | February 2027 (security: Feb 2028) |
+| Laravel 11 | [SECURE] Supported | September 2026 |
+| Laravel 10 | [INSECURE] EOL | February 4, 2025 |
+| Laravel 9 | [INSECURE] EOL | February 8, 2024 |

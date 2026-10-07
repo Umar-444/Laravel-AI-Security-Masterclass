@@ -38,11 +38,11 @@ header('X-Frame-Options: ALLOW-FROM https://trusted-site.com');
 ```
 
 #### Browser Support
-- ✅ Internet Explorer 8+
-- ✅ Firefox 3.6.9+
-- ✅ Chrome 4.1+
-- ✅ Safari 4+
-- ❌ Deprecated in favor of CSP frame-ancestors
+- Internet Explorer 8+
+- Firefox 3.6.9+
+- Chrome 4.1+
+- Safari 4+
+- [INSECURE] Deprecated in favor of CSP frame-ancestors
 
 ### Content Security Policy Frame Protection
 
@@ -295,7 +295,7 @@ echo CSPNonceManager::createSecureScript('console.log("Secure inline script");')
 
 ```php
 <?php
-// ✅ Modern CSP violation reporting — replaces deprecated report-uri
+// [SECURE] Modern CSP violation reporting — replaces deprecated report-uri
 // Step 1: Define the reporting endpoint
 header('Reporting-Endpoints: csp-endpoint="https://yourdomain.com/api/csp-report"');
 
@@ -307,7 +307,7 @@ header("Content-Security-Policy: default-src 'self'; report-to csp-endpoint");
 // header("Content-Security-Policy: default-src 'self'; report-uri /csp-report");
 ```
 
-## X-XSS-Protection Header — DEPRECATED ⛔
+## X-XSS-Protection Header — DEPRECATED [DEPRECATED]
 
 > **Do NOT use `X-XSS-Protection`.** This header has been **removed from Chrome, Firefox, Edge, and Safari**. It can introduce new XSS vulnerabilities in older browsers and is no longer recommended by OWASP.
 >
@@ -315,10 +315,10 @@ header("Content-Security-Policy: default-src 'self'; report-to csp-endpoint");
 
 ```php
 <?php
-// ❌ REMOVE THIS — Deprecated and harmful:
+// [INSECURE] REMOVE THIS — Deprecated and harmful:
 // header('X-XSS-Protection: 1; mode=block');
 
-// ✅ USE THIS INSTEAD — Strict CSP with nonces:
+// [SECURE] USE THIS INSTEAD — Strict CSP with nonces:
 header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-{$nonce}'; object-src 'none'; base-uri 'self'");
 ```
 
@@ -527,7 +527,7 @@ class SecurityHeadersMiddleware
 
 ### Registering Laravel Middleware (Laravel 11+)
 
-> ⚠️ **`app/Http/Kernel.php` was removed in Laravel 11.** Use `bootstrap/app.php` instead.
+> Warning: **`app/Http/Kernel.php` was removed in Laravel 11.** Use `bootstrap/app.php` instead.
 
 ```php
 <?php
@@ -728,7 +728,7 @@ if (!empty($results['issues'])) {
 - [ ] `X-Content-Type-Options: nosniff` — Prevent MIME sniffing
 - [ ] `Content-Security-Policy` — Strict CSP with nonces (replaces deprecated `X-XSS-Protection`)
 - [ ] `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload` — Enforce HTTPS
-- [ ] **~~`X-XSS-Protection`~~** — ⛔ REMOVED/DEPRECATED — Do not use
+- [ ] **~~`X-XSS-Protection`~~** — [DEPRECATED] REMOVED/DEPRECATED — Do not use
 
 ### Additional Security Headers (2026 Standard)
 - [ ] `Referrer-Policy: strict-origin-when-cross-origin` — Control referrer information

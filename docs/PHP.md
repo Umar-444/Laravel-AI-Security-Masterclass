@@ -32,8 +32,8 @@ function assignRole(UserRole $role): void
     // $role is guaranteed to be a valid UserRole
 }
 
-assignRole(UserRole::Admin); // ✅ safe
-assignRole('hacker');        // ❌ TypeError thrown automatically
+assignRole(UserRole::Admin); // [SECURE] safe
+assignRole('hacker');        // [INSECURE] TypeError thrown automatically
 ```
 
 ### PHP 8.4 — New `array_find()` for Safe Lookups
@@ -75,10 +75,10 @@ function hashPasswordLegacy(string $password): string
 <?php
 declare(strict_types=1);
 
-// ❌ VULNERABLE
+// [INSECURE] VULNERABLE
 $query = "SELECT * FROM users WHERE email = '$email'";
 
-// ✅ SECURE — PDO prepared statement
+// [SECURE] SECURE — PDO prepared statement
 $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
 $stmt->execute([$email]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -93,10 +93,10 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 ```php
 <?php
-// ✅ Correct — ENT_SUBSTITUTE prevents malformed UTF-8 from bypassing
+// [SECURE] Correct — ENT_SUBSTITUTE prevents malformed UTF-8 from bypassing
 echo htmlspecialchars($userInput, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
 
-// ❌ Weak — missing flags
+// [INSECURE] Weak — missing flags
 echo htmlspecialchars($userInput); // susceptible to some bypasses
 ```
 
@@ -139,19 +139,19 @@ $filename = bin2hex(random_bytes(16)) . '.jpg';
 <?php
 declare(strict_types=1);
 
-// ✅ OWASP 2024 — Argon2id parameters
+// [SECURE] OWASP 2024 — Argon2id parameters
 $hash = password_hash($password, PASSWORD_ARGON2ID, [
     'memory_cost' => 65536, // 64MB minimum
     'time_cost'   => 3,     // 3 iterations (OWASP 2024)
     'threads'     => 1,     // 1 thread (recommended for web)
 ]);
 
-// ✅ Always use password_verify() — timing-safe
+// [SECURE] Always use password_verify() — timing-safe
 if (password_verify($inputPassword, $hash)) {
     // authenticated
 }
 
-// ✅ Rehash on login if parameters have changed
+// [SECURE] Rehash on login if parameters have changed
 if (password_needs_rehash($hash, PASSWORD_ARGON2ID, ['memory_cost' => 65536, 'time_cost' => 3, 'threads' => 1])) {
     $newHash = password_hash($password, PASSWORD_ARGON2ID, ['memory_cost' => 65536, 'time_cost' => 3, 'threads' => 1]);
     // Update hash in database
@@ -211,8 +211,8 @@ composer outdated --direct
 
 | Version | Status | EOL Date |
 |---|---|---|
-| PHP 8.4 | ✅ Active | November 2027 |
-| PHP 8.3 | ✅ Security fixes | November 2026 |
-| PHP 8.2 | ✅ Security fixes | December 2026 |
-| PHP 8.1 | ❌ EOL | November 25, 2024 |
-| PHP 8.0 | ❌ EOL | November 26, 2023 |
+| PHP 8.4 | Active | November 2027 |
+| PHP 8.3 | [SECURE] Security fixes | November 2026 |
+| PHP 8.2 | [SECURE] Security fixes | December 2026 |
+| PHP 8.1 | [INSECURE] EOL | November 25, 2024 |
+| PHP 8.0 | [INSECURE] EOL | November 26, 2023 |

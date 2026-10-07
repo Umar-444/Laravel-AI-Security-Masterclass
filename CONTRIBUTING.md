@@ -14,7 +14,7 @@ Please maintain a professional, respectful, and inclusive environment. Harassmen
 
 ### 1. Reporting Security Vulnerabilities
 
-> ⚠️ **IMPORTANT**: Do NOT report security vulnerabilities via public GitHub issues.
+> Warning: **IMPORTANT**: Do NOT report security vulnerabilities via public GitHub issues.
 
 Please follow our [Security Policy](SECURITY.md) and report vulnerabilities via:
 - **GitHub Private Security Advisories**: [Report a Vulnerability](https://github.com/Umar-444/Laravel-AI-Security-Masterclass/security/advisories/new)
@@ -75,10 +75,10 @@ To propose a topic, open a feature request in [GitHub Issues](https://github.com
 ## Contact & Questions
 
 - **Lead Maintainer**: **Umar Farooq**
-- 📧 **Email**: [contact@itsumarfarooq.com](mailto:contact@itsumarfarooq.com)
-- 🌐 **Website**: [itsumarfarooq.com](https://itsumarfarooq.com)
-- 🏢 **Company**: [Worldwebtree.com](https://worldwebtree.com)
-- 💼 **LinkedIn**: [linkedin.com/in/umar444](https://www.linkedin.com/in/umar444)
-- 🐙 **GitHub**: [github.com/umar-444](https://github.com/umar-444)
-- 🐦 **X (Twitter)**: [@umartechtalks](https://x.com/umartechtalks)
-- 🔗 **Repository**: [https://github.com/Umar-444/Laravel-AI-Security-Masterclass](https://github.com/Umar-444/Laravel-AI-Security-Masterclass)
+- **Email**: [contact@itsumarfarooq.com](mailto:contact@itsumarfarooq.com)
+- **Website**: [itsumarfarooq.com](https://itsumarfarooq.com)
+- **Company**: [Worldwebtree.com](https://worldwebtree.com)
+- **LinkedIn**: [linkedin.com/in/umar444](https://www.linkedin.com/in/umar444)
+- **GitHub**: [github.com/umar-444](https://github.com/umar-444)
+- **X (Twitter)**: [@umartechtalks](https://x.com/umartechtalks)
+- **Repository**: [https://github.com/Umar-444/Laravel-AI-Security-Masterclass](https://github.com/Umar-444/Laravel-AI-Security-Masterclass)

@@ -74,7 +74,7 @@ $pdo = new PDO("mysql:host=localhost;dbname=test", "user", "pass", [
 
 $userId = $_GET['id'] ?? 0;
 
-// ✅ SECURE: Prepared statement with parameter binding
+// [SECURE]: Prepared statement with parameter binding
 $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$userId]);
 $user = $stmt->fetch();
@@ -110,7 +110,7 @@ $stmt->execute([$name, $email, $hashedPassword]);
 // mysqli alternative
 $mysqli = new mysqli("localhost", "user", "pass", "test");
 
-// ✅ SECURE: mysqli prepared statement
+// [SECURE]: mysqli prepared statement
 $stmt = $mysqli->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->bind_param("i", $userId); // "i" for integer
 $stmt->execute();
@@ -135,7 +135,7 @@ class User extends Model
 {
     protected $fillable = ['name', 'email', 'password'];
 
-    // ✅ SECURE: Eloquent automatically parameterizes
+    // [SECURE]: Eloquent automatically parameterizes
     public static function findActiveUser($id)
     {
         return self::where('id', $id)
@@ -143,7 +143,7 @@ class User extends Model
                   ->first();
     }
 
-    // ✅ SECURE: Mass assignment protection
+    // [SECURE]: Mass assignment protection
     public static function createUser(array $data)
     {
         return self::create($data); // Only fillable fields are used
@@ -156,13 +156,13 @@ class User extends Model
 <?php
 use Illuminate\Support\Facades\DB;
 
-// ✅ SECURE: Query Builder automatically parameterizes
+// [SECURE]: Query Builder automatically parameterizes
 $users = DB::table('users')
     ->where('email', $request->email)
     ->where('status', 'active')
     ->get();
 
-// ✅ SECURE: Named bindings
+// [SECURE]: Named bindings
 $users = DB::select('SELECT * FROM users WHERE created_at > :date', [
     'date' => now()->subDays(30)
 ]);
@@ -172,7 +172,7 @@ $users = DB::select('SELECT * FROM users WHERE created_at > :date', [
 
 #### DANGER: Raw Queries (When Used Incorrectly)
 ```php
-// ❌ VULNERABLE: Direct string concatenation in Laravel
+// [INSECURE] VULNERABLE: Direct string concatenation in Laravel
 $userId = $request->id;
 $users = DB::select("SELECT * FROM users WHERE id = {$userId}");
 // Same vulnerability as PHP direct concatenation!
@@ -180,11 +180,11 @@ $users = DB::select("SELECT * FROM users WHERE id = {$userId}");
 
 #### SAFE: Raw Queries with Bindings
 ```php
-// ✅ SECURE: Raw queries with proper parameter binding
+// [SECURE]: Raw queries with proper parameter binding
 $userId = $request->id;
 $users = DB::select('SELECT * FROM users WHERE id = ?', [$userId]);
 
-// ✅ SECURE: Named parameters
+// [SECURE]: Named parameters
 $users = DB::select('SELECT * FROM users WHERE email = :email', [
     'email' => $request->email
 ]);
@@ -238,11 +238,11 @@ $userInput = $pdo->quote($userInput); // Adds quotes and escapes
 
 ### 1. Dynamic Table Names
 ```php
-// ❌ VULNERABLE: Dynamic table name
+// [INSECURE] VULNERABLE: Dynamic table name
 $table = $_GET['table'];
 $query = "SELECT * FROM {$table}";
 
-// ✅ SECURE: Whitelist table names
+// [SECURE]: Whitelist table names
 $allowedTables = ['users', 'products', 'orders'];
 if (!in_array($table, $allowedTables)) {
     die('Invalid table');
@@ -252,11 +252,11 @@ $query = "SELECT * FROM {$table}";
 
 ### 2. Dynamic Column Names
 ```php
-// ❌ VULNERABLE: Dynamic column
+// [INSECURE] VULNERABLE: Dynamic column
 $column = $_GET['sort'];
 $query = "SELECT * FROM products ORDER BY {$column}";
 
-// ✅ SECURE: Whitelist columns
+// [SECURE]: Whitelist columns
 $allowedColumns = ['name', 'price', 'created_at'];
 if (!in_array($column, $allowedColumns)) {
     $column = 'created_at'; // Default
@@ -266,22 +266,22 @@ $query = "SELECT * FROM products ORDER BY {$column}";
 
 ### 3. LIKE Queries
 ```php
-// ❌ VULNERABLE: Direct LIKE query
+// [INSECURE] VULNERABLE: Direct LIKE query
 $search = $_GET['search'];
 $query = "SELECT * FROM products WHERE name LIKE '%{$search}%'";
 
-// ✅ SECURE: Prepared statement with wildcards
+// [SECURE]: Prepared statement with wildcards
 $stmt = $pdo->prepare("SELECT * FROM products WHERE name LIKE ?");
 $stmt->execute(["%{$search}%"]);
 ```
 
 ### 4. IN Clauses
 ```php
-// ❌ VULNERABLE: Dynamic IN clause
+// [INSECURE] VULNERABLE: Dynamic IN clause
 $ids = $_GET['ids']; // "1,2,3" or "1); DROP TABLE users; --"
 $query = "SELECT * FROM users WHERE id IN ({$ids})";
 
-// ✅ SECURE: Prepared statement with multiple parameters
+// [SECURE]: Prepared statement with multiple parameters
 $ids = explode(',', $_GET['ids']);
 $placeholders = str_repeat('?,', count($ids) - 1) . '?';
 $stmt = $pdo->prepare("SELECT * FROM users WHERE id IN ({$placeholders})");
@@ -330,7 +330,7 @@ $stmt = $pdo->prepare("INSERT INTO users (username) VALUES (?)");
 $stmt->execute([$username]);
 
 // Step 2: Later, vulnerable login query
-// ❌ VULNERABLE: Second-order injection
+// [INSECURE] VULNERABLE: Second-order injection
 $username = $_POST['username'];
 $stmt = $pdo->prepare("SELECT * FROM users WHERE username = '{$username}' AND password = ?");
 $stmt->execute([$password]);
@@ -342,11 +342,11 @@ $stmt->execute([$password]);
 ### Prevention
 ```php
 <?php
-// ✅ SECURE: Use prepared statements everywhere
+// [SECURE]: Use prepared statements everywhere
 $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ? AND password = ?");
 $stmt->execute([$username, $password]);
 
-// ✅ SECURE: Input validation on storage
+// [SECURE]: Input validation on storage
 function validateUsername($username) {
     if (!preg_match('/^[a-zA-Z0-9_-]{3,20}$/', $username)) {
         throw new InvalidArgumentException('Invalid username');
@@ -403,7 +403,7 @@ class SQLInjectionTest extends TestCase
 ### 1. Use Eloquent Relationships
 ```php
 <?php
-// ✅ SECURE: Eloquent relationships prevent injection
+// [SECURE]: Eloquent relationships prevent injection
 class Post extends Model
 {
     public function user()
@@ -419,7 +419,7 @@ $posts = Post::where('user_id', $userId)->with('user')->get();
 ### 2. Use Route Model Binding
 ```php
 <?php
-// ✅ SECURE: Laravel automatically validates and finds model
+// [SECURE]: Laravel automatically validates and finds model
 Route::get('/users/{user}', function (User $user) {
     // $user is automatically resolved and validated
     return $user;

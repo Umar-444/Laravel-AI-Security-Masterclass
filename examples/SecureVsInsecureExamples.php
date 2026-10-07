@@ -26,7 +26,7 @@ class SQLInjectionExamples
      */
     public function getUserVulnerable($userId)
     {
-        // ❌ VULNERABLE: Direct string concatenation
+        // [INSECURE] VULNERABLE: Direct string concatenation
         $query = "SELECT * FROM users WHERE id = " . $userId;
         $result = $this->pdo->query($query);
 
@@ -38,7 +38,7 @@ class SQLInjectionExamples
      */
     public function getUserSecure($userId)
     {
-        // ✅ SECURE: Parameterized query
+        // [SECURE]: Parameterized query
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE id = ?");
         $stmt->execute([$userId]);
 
@@ -50,7 +50,7 @@ class SQLInjectionExamples
      */
     public function searchUsersVulnerable($name, $email)
     {
-        // ❌ VULNERABLE: Multiple injection points
+        // [INSECURE] VULNERABLE: Multiple injection points
         $query = "SELECT * FROM users WHERE name LIKE '%{$name}%' AND email = '{$email}'";
         $result = $this->pdo->query($query);
 
@@ -62,7 +62,7 @@ class SQLInjectionExamples
      */
     public function searchUsersSecure($name, $email)
     {
-        // ✅ SECURE: All parameters bound
+        // [SECURE]: All parameters bound
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE name LIKE ? AND email = ?");
         $stmt->execute(["%{$name}%", $email]);
 
@@ -81,7 +81,7 @@ class XSSExamples
      */
     public function displayWelcomeVulnerable($name)
     {
-        // ❌ VULNERABLE: Direct output without escaping
+        // [INSECURE] VULNERABLE: Direct output without escaping
         echo "<h1>Welcome, {$name}!</h1>";
 
         // This could execute: <script>alert('XSS')</script>
@@ -93,7 +93,7 @@ class XSSExamples
      */
     public function displayWelcomeSecure($name)
     {
-        // ✅ SECURE: Properly escaped output
+        // [SECURE]: Properly escaped output
         echo "<h1>Welcome, " . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . "!</h1>";
     }
 
@@ -102,7 +102,7 @@ class XSSExamples
      */
     public function createLinkVulnerable($url, $text)
     {
-        // ❌ VULNERABLE: Unescaped URL in href
+        // [INSECURE] VULNERABLE: Unescaped URL in href
         echo "<a href='{$url}'>{$text}</a>";
     }
 
@@ -111,7 +111,7 @@ class XSSExamples
      */
     public function createLinkSecure($url, $text)
     {
-        // ✅ SECURE: Validate URL and escape text
+        // [SECURE]: Validate URL and escape text
         $safeUrl = filter_var($url, FILTER_VALIDATE_URL) ? $url : '#';
         $safeText = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 
@@ -123,7 +123,7 @@ class XSSExamples
      */
     public function createJSVariableVulnerable($userInput)
     {
-        // ❌ VULNERABLE: Unescaped data in JavaScript
+        // [INSECURE] VULNERABLE: Unescaped data in JavaScript
         echo "<script>var userData = '{$userInput}';</script>";
     }
 
@@ -132,7 +132,7 @@ class XSSExamples
      */
     public function createJSVariableSecure($userInput)
     {
-        // ✅ SECURE: JSON encoding for JavaScript context
+        // [SECURE]: JSON encoding for JavaScript context
         $safeData = json_encode($userInput, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
         echo "<script>var userData = {$safeData};</script>";
     }
@@ -149,7 +149,7 @@ class FileInclusionExamples
      */
     public function includePageVulnerable($page)
     {
-        // ❌ VULNERABLE: Direct file inclusion
+        // [INSECURE] VULNERABLE: Direct file inclusion
         include($page . '.php');
 
         // Attacker could include: ../../../etc/passwd
@@ -161,7 +161,7 @@ class FileInclusionExamples
      */
     public function includePageSecure($page)
     {
-        // ✅ SECURE: Whitelist approach
+        // [SECURE]: Whitelist approach
         $allowedPages = ['home', 'about', 'contact', 'products'];
 
         if (in_array($page, $allowedPages)) {
@@ -176,7 +176,7 @@ class FileInclusionExamples
      */
     public function loadConfigVulnerable($configFile)
     {
-        // ❌ VULNERABLE: Remote file inclusion
+        // [INSECURE] VULNERABLE: Remote file inclusion
         include($configFile);
     }
 
@@ -185,7 +185,7 @@ class FileInclusionExamples
      */
     public function loadConfigSecure($configName)
     {
-        // ✅ SECURE: Local files only, no remote inclusion
+        // [SECURE]: Local files only, no remote inclusion
         $configPath = __DIR__ . '/config/' . basename($configName) . '.php';
 
         if (file_exists($configPath) && is_readable($configPath)) {
@@ -207,7 +207,7 @@ class CommandInjectionExamples
      */
     public function pingHostVulnerable($host)
     {
-        // ❌ VULNERABLE: Direct command execution
+        // [INSECURE] VULNERABLE: Direct command execution
         $output = shell_exec("ping -c 4 {$host}");
 
         return $output;
@@ -218,7 +218,7 @@ class CommandInjectionExamples
      */
     public function pingHostSecure($host)
     {
-        // ✅ SECURE: Input validation and escaping
+        // [SECURE]: Input validation and escaping
         if (!filter_var($host, FILTER_VALIDATE_IP) && !preg_match('/^[a-zA-Z0-9.-]+$/', $host)) {
             throw new Exception("Invalid host");
         }
@@ -234,7 +234,7 @@ class CommandInjectionExamples
      */
     public function runBackupVulnerable($source, $destination)
     {
-        // ❌ VULNERABLE: Multiple injection points
+        // [INSECURE] VULNERABLE: Multiple injection points
         exec("tar -czf {$destination} {$source}");
     }
 
@@ -243,7 +243,7 @@ class CommandInjectionExamples
      */
     public function runBackupSecure($source, $destination)
     {
-        // ✅ SECURE: Validate paths and use safe functions
+        // [SECURE]: Validate paths and use safe functions
         $realSource = realpath($source);
         $realDest = realpath(dirname($destination));
 
@@ -276,7 +276,7 @@ class AuthenticationExamples
      */
     public function registerUserVulnerable($email, $password)
     {
-        // ❌ VULNERABLE: Plain text password storage
+        // [INSECURE] VULNERABLE: Plain text password storage
         $stmt = $this->pdo->prepare("INSERT INTO users (email, password) VALUES (?, ?)");
         $stmt->execute([$email, $password]);
     }
@@ -286,7 +286,7 @@ class AuthenticationExamples
      */
     public function registerUserSecure($email, $password)
     {
-        // ✅ SECURE: Proper password hashing
+        // [SECURE]: Proper password hashing
         $hashedPassword = password_hash($password, PASSWORD_ARGON2ID, [
             'memory_cost' => 65536,
             'time_cost' => 4,
@@ -302,7 +302,7 @@ class AuthenticationExamples
      */
     public function loginVulnerable($email, $password)
     {
-        // ❌ VULNERABLE: No session security
+        // [INSECURE] VULNERABLE: No session security
         $stmt = $this->pdo->query("SELECT * FROM users WHERE email = '{$email}'");
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -319,7 +319,7 @@ class AuthenticationExamples
      */
     public function loginSecure($email, $password)
     {
-        // ✅ SECURE: Prepared statements and session security
+        // [SECURE]: Prepared statements and session security
         $stmt = $this->pdo->prepare("SELECT id, password_hash FROM users WHERE email = ? AND active = 1");
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -351,7 +351,7 @@ class ErrorHandlingExamples
     public function connectToDatabaseVulnerable($config)
     {
         try {
-            // ❌ VULNERABLE: Exposes database credentials in error
+            // [INSECURE] VULNERABLE: Exposes database credentials in error
             $pdo = new PDO(
                 "mysql:host={$config['host']};dbname={$config['db']}",
                 $config['user'],
@@ -382,7 +382,7 @@ class ErrorHandlingExamples
             return $pdo;
 
         } catch (PDOException $e) {
-            // ✅ SECURE: Log error internally, show generic message
+            // [SECURE]: Log error internally, show generic message
             error_log("Database connection failed: " . $e->getMessage());
             throw new Exception("Database connection failed. Please try again later.");
         }
@@ -393,7 +393,7 @@ class ErrorHandlingExamples
      */
     public function readFileVulnerable($filename)
     {
-        // ❌ VULNERABLE: Full path disclosure
+        // [INSECURE] VULNERABLE: Full path disclosure
         $content = file_get_contents($filename);
 
         if ($content === false) {
@@ -408,7 +408,7 @@ class ErrorHandlingExamples
      */
     public function readFileSecure($filename)
     {
-        // ✅ SECURE: Path validation and generic error messages
+        // [SECURE]: Path validation and generic error messages
         $fullPath = realpath(__DIR__ . '/files/' . basename($filename));
 
         if (!$fullPath || !file_exists($fullPath)) {

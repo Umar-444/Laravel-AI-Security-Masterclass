@@ -40,7 +40,7 @@ sudo systemctl status snap.certbot.renew.timer
 
 #### Commercial SSL — ECDSA P-256 (Recommended) or RSA-4096
 ```bash
-# ✅ Recommended: ECDSA P-256 — Faster, smaller, equally secure
+# [SECURE] Recommended: ECDSA P-256 — Faster, smaller, equally secure
 openssl ecparam -genkey -name prime256v1 | openssl ec -out yourdomain-ec.key
 openssl req -new -key yourdomain-ec.key -out yourdomain.csr \
   -subj "/C=US/ST=State/L=City/O=Company/CN=yourdomain.com"
@@ -284,16 +284,16 @@ TARGET_DIR="/var/www/yourdomain"
 WEB_USER="www-data"
 WEB_GROUP="www-data"
 
-echo "🔍 Auditing file permissions in $TARGET_DIR"
+echo " Auditing file permissions in $TARGET_DIR"
 
 # Check .env file permissions
 ENV_FILE="$TARGET_DIR/.env"
 if [ -f "$ENV_FILE" ]; then
     PERMS=$(stat -c "%a" "$ENV_FILE")
     if [ "$PERMS" != "600" ]; then
-        echo "❌ .env file has insecure permissions: $PERMS (should be 600)"
+        echo "[INSECURE] .env file has insecure permissions: $PERMS (should be 600)"
         chmod 600 "$ENV_FILE"
-        echo "✅ Fixed .env permissions"
+        echo "[SECURE] Fixed .env permissions"
     fi
 fi
 
@@ -303,7 +303,7 @@ if [ -d "$STORAGE_DIR" ]; then
     find "$STORAGE_DIR" -type d -exec chmod 775 {} \;
     find "$STORAGE_DIR" -type f -exec chmod 664 {} \;
     chown -R "$WEB_USER:$WEB_GROUP" "$STORAGE_DIR"
-    echo "✅ Fixed storage directory permissions"
+    echo "[SECURE] Fixed storage directory permissions"
 fi
 
 # Check bootstrap cache permissions
@@ -311,27 +311,27 @@ BOOTSTRAP_CACHE="$TARGET_DIR/bootstrap/cache"
 if [ -d "$BOOTSTRAP_CACHE" ]; then
     chmod 775 "$BOOTSTRAP_CACHE"
     chown -R "$WEB_USER:$WEB_GROUP" "$BOOTSTRAP_CACHE"
-    echo "✅ Fixed bootstrap cache permissions"
+    echo "[SECURE] Fixed bootstrap cache permissions"
 fi
 
 # Find world-writable files (security risk)
-echo "🔍 Checking for world-writable files..."
+echo " Checking for world-writable files..."
 WORLD_WRITABLE=$(find "$TARGET_DIR" -type f -perm -002 2>/dev/null)
 if [ -n "$WORLD_WRITABLE" ]; then
-    echo "❌ Found world-writable files:"
+    echo "[INSECURE] Found world-writable files:"
     echo "$WORLD_WRITABLE"
     echo "Consider removing world write permissions"
 fi
 
 # Find files with incorrect ownership
-echo "🔍 Checking file ownership..."
+echo " Checking file ownership..."
 INCORRECT_OWNER=$(find "$TARGET_DIR" -not -user "$WEB_USER" -type f \( -name "*.php" -o -name "*.log" \) 2>/dev/null | head -10)
 if [ -n "$INCORRECT_OWNER" ]; then
-    echo "⚠️ Found files not owned by $WEB_USER:"
+    echo "Warning: Found files not owned by $WEB_USER:"
     echo "$INCORRECT_OWNER"
 fi
 
-echo "🎉 Permission audit completed!"
+echo " Permission audit completed!"
 ```
 
 ## Hiding Sensitive Files
@@ -773,14 +773,14 @@ if (!$firewall->checkRequest()) {
 
 set -e  # Exit on any error
 
-echo "🚀 Starting secure deployment..."
+echo " Starting secure deployment..."
 
 # Pre-deployment checks
-echo "🔍 Running pre-deployment checks..."
+echo " Running pre-deployment checks..."
 
 # Check if running as root (dangerous)
 if [ "$EUID" -eq 0 ]; then
-    echo "❌ Do not run deployment as root"
+    echo "[INSECURE] Do not run deployment as root"
     exit 1
 fi
 
@@ -788,22 +788,22 @@ fi
 REQUIRED_SPACE=1000000  # 1GB in KB
 AVAILABLE_SPACE=$(df /var/www | tail -1 | awk '{print $4}')
 if [ "$AVAILABLE_SPACE" -lt "$REQUIRED_SPACE" ]; then
-    echo "❌ Insufficient disk space"
+    echo "[INSECURE] Insufficient disk space"
     exit 1
 fi
 
 # Backup current deployment
-echo "💾 Creating backup..."
+echo " Creating backup..."
 BACKUP_DIR="/var/backups/$(date +%Y%m%d_%H%M%S)"
 sudo mkdir -p "$BACKUP_DIR"
 sudo cp -r /var/www/yourdomain "$BACKUP_DIR/"
 
 # Deploy application
-echo "📦 Deploying application..."
+echo " Deploying application..."
 sudo cp -r /tmp/deployment/* /var/www/yourdomain/
 
 # Set secure permissions
-echo "🔒 Setting secure permissions..."
+echo " Setting secure permissions..."
 sudo chown -R www-data:www-data /var/www/yourdomain
 sudo find /var/www/yourdomain -type f -exec chmod 644 {} \;
 sudo find /var/www/yourdomain -type d -exec chmod 755 {} \;
@@ -812,60 +812,60 @@ sudo chmod 775 /var/www/yourdomain/storage
 sudo chmod 775 /var/www/yourdomain/bootstrap/cache
 
 # Install dependencies
-echo "📦 Installing dependencies..."
+echo " Installing dependencies..."
 cd /var/www/yourdomain
 composer install --no-dev --optimize-autoloader
 npm ci --production
 
 # Run database migrations
-echo "🗄️ Running migrations..."
+echo " Running migrations..."
 php artisan migrate --force
 
 # Clear and cache configuration
-echo "⚙️ Optimizing application..."
+echo " Optimizing application..."
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 php artisan event:cache
 
 # Install Node.js dependencies and build assets
-echo "🎨 Building assets..."
+echo " Building assets..."
 npm run production
 
 # Run tests
-echo "🧪 Running tests..."
+echo " Running tests..."
 if ! php artisan test --no-coverage; then
-    echo "❌ Tests failed - rolling back..."
+    echo "[INSECURE] Tests failed - rolling back..."
     sudo rm -rf /var/www/yourdomain
     sudo mv "$BACKUP_DIR/yourdomain" /var/www/
     exit 1
 fi
 
 # Health check
-echo "🏥 Running health checks..."
+echo " Running health checks..."
 if curl -f -s http://localhost/health-check > /dev/null; then
-    echo "✅ Application health check passed"
+    echo "[SECURE] Application health check passed"
 else
-    echo "❌ Application health check failed - rolling back..."
+    echo "[INSECURE] Application health check failed - rolling back..."
     sudo rm -rf /var/www/yourdomain
     sudo mv "$BACKUP_DIR/yourdomain" /var/www/
     exit 1
 fi
 
 # Clean up old backups (keep last 5)
-echo "🧹 Cleaning up old backups..."
+echo " Cleaning up old backups..."
 cd /var/backups
 ls -t | tail -n +6 | xargs -r sudo rm -rf
 
 # Restart services
-echo "🔄 Restarting services..."
+echo " Restarting services..."
 sudo systemctl reload nginx
 sudo systemctl reload php8.2-fpm
 
 # Log deployment
 echo "$(date): Deployment completed successfully" >> /var/log/deployments.log
 
-echo "🎉 Secure deployment completed successfully!"
+echo " Secure deployment completed successfully!"
 ```
 
 ### Rollback Script
@@ -874,17 +874,17 @@ echo "🎉 Secure deployment completed successfully!"
 #!/bin/bash
 # rollback.sh
 
-echo "🔄 Starting rollback..."
+echo " Starting rollback..."
 
 # Find latest backup
 LATEST_BACKUP=$(ls -t /var/backups | head -1)
 
 if [ -z "$LATEST_BACKUP" ]; then
-    echo "❌ No backup found"
+    echo "[INSECURE] No backup found"
     exit 1
 fi
 
-echo "📦 Rolling back to: $LATEST_BACKUP"
+echo " Rolling back to: $LATEST_BACKUP"
 
 # Stop services
 sudo systemctl stop nginx
@@ -900,9 +900,9 @@ sudo systemctl start nginx
 
 # Health check
 if curl -f -s http://localhost/health-check > /dev/null; then
-    echo "✅ Rollback successful"
+    echo "[SECURE] Rollback successful"
 else
-    echo "❌ Rollback failed - manual intervention required"
+    echo "[INSECURE] Rollback failed - manual intervention required"
     exit 1
 fi
 ```
@@ -1011,7 +1011,7 @@ class DeploymentMonitor
 
     private static function sendFailureAlert(array $details): void
     {
-        $message = "🚨 Deployment Failed\n\n";
+        $message = " Deployment Failed\n\n";
         $message .= "Version: {$details['version']}\n";
         $message .= "Environment: {$details['environment']}\n";
         $message .= "Error: {$details['error'] ?? 'Unknown error'}\n";

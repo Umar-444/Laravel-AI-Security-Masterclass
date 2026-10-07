@@ -283,10 +283,10 @@ class FileValidator
 #### Never Store in Web Root
 
 ```php
-// ❌ DANGEROUS: Storing in public web directory
+// [INSECURE] DANGEROUS: Storing in public web directory
 move_uploaded_file($file['tmp_name'], '/var/www/html/uploads/' . $filename);
 
-// ✅ SECURE: Store outside web root
+// [SECURE]: Store outside web root
 $uploadDir = '/var/secure/uploads/'; // Outside web root
 move_uploaded_file($file['tmp_name'], $uploadDir . $safeFilename);
 

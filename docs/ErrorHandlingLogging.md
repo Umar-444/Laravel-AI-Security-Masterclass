@@ -58,7 +58,7 @@ LOG_LEVEL=error
 
 ### What to Log (and What Not to Log)
 
-#### Log Security Events ✅
+#### Log Security Events [SECURE]
 ```php
 <?php
 class SecurityLogger
@@ -97,7 +97,7 @@ class SecurityLogger
 }
 ```
 
-#### Never Log Sensitive Data ❌
+#### Never Log Sensitive Data [INSECURE]
 ```php
 <?php
 // WRONG: Logging sensitive information
@@ -355,7 +355,7 @@ class SecureErrorHandler
 </head>
 <body>
     <div class="error-container">
-        <div class="error-icon">⚠️</div>
+        <div class="error-icon">Warning:</div>
         <h1 class="error-title">Oops! Something went wrong</h1>
         <p class="error-message">
             We encountered an unexpected error while processing your request.
@@ -626,16 +626,16 @@ class LogAnalyzer
         $logFile = '/var/log/app/security.log';
         $analysis = self::analyzeSecurityLogs($logFile);
 
-        $report = "🔍 Security Log Analysis Report\n";
+        $report = " Security Log Analysis Report\n";
         $report .= "Generated: " . date('Y-m-d H:i:s') . "\n\n";
 
-        $report .= "📊 Summary:\n";
+        $report .= " Summary:\n";
         $report .= "- Total Log Entries: {$analysis['total_entries']}\n";
         $report .= "- Security Events: {$analysis['security_events']}\n";
         $report .= "- Failed Login Attempts: {$analysis['failed_logins']}\n\n";
 
         if (!empty($analysis['suspicious_ips'])) {
-            $report .= "🚨 Suspicious IPs:\n";
+            $report .= " Suspicious IPs:\n";
             foreach ($analysis['suspicious_ips'] as $ip => $count) {
                 $report .= "- {$ip}: {$count} failed attempts\n";
             }
@@ -643,7 +643,7 @@ class LogAnalyzer
         }
 
         if (!empty($analysis['error_patterns'])) {
-            $report .= "🐛 Error Patterns:\n";
+            $report .= " Error Patterns:\n";
             foreach ($analysis['error_patterns'] as $pattern => $count) {
                 $report .= "- {$pattern}: {$count} occurrences\n";
             }
