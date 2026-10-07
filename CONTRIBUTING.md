@@ -18,7 +18,7 @@ Please maintain a professional, respectful, and inclusive environment. Harassmen
 
 Please follow our [Security Policy](SECURITY.md) and report vulnerabilities via:
 - **GitHub Private Security Advisories**: [Report a Vulnerability](https://github.com/Umar-444/Laravel-AI-Security-Masterclass/security/advisories/new)
-- **Email**: Umar@Worldwebtree.com or Umarpak995@gmail.com
+- **Email**: [contact@itsumarfarooq.com](mailto:contact@itsumarfarooq.com)
 
 ---
 
@@ -74,6 +74,11 @@ To propose a topic, open a feature request in [GitHub Issues](https://github.com
 
 ## Contact & Questions
 
-- **Lead Maintainer**: Umar Farooq
-- **Email**: Umar@Worldwebtree.com | Umarpak995@gmail.com
-- **Repository**: [https://github.com/Umar-444/Laravel-AI-Security-Masterclass](https://github.com/Umar-444/Laravel-AI-Security-Masterclass)
+- **Lead Maintainer**: **Umar Farooq**
+- 📧 **Email**: [contact@itsumarfarooq.com](mailto:contact@itsumarfarooq.com)
+- 🌐 **Website**: [itsumarfarooq.com](https://itsumarfarooq.com)
+- 🏢 **Company**: [Worldwebtree.com](https://worldwebtree.com)
+- 💼 **LinkedIn**: [linkedin.com/in/umar444](https://www.linkedin.com/in/umar444)
+- 🐙 **GitHub**: [github.com/umar-444](https://github.com/umar-444)
+- 🐦 **X (Twitter)**: [@umartechtalks](https://x.com/umartechtalks)
+- 🔗 **Repository**: [https://github.com/Umar-444/Laravel-AI-Security-Masterclass](https://github.com/Umar-444/Laravel-AI-Security-Masterclass)

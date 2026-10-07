@@ -397,7 +397,7 @@ Version 1 is complete, but we want your feedback!
 - **What should Version 2 cover first?** Priority suggestions
 - **Integration ideas?** How to use this in your workflow?
 
-**Share your feedback:** [GitHub Discussions](https://github.com/Umar-444/Laravel-AI-Security-Masterclass/discussions) | [Issues](https://github.com/Umar-444/Laravel-AI-Security-Masterclass/issues)
+**Share your feedback:** [GitHub Discussions](https://github.com/Umar-444/Laravel-AI-Security-Masterclass/discussions) | [Issues](https://github.com/Umar-444/Laravel-AI-Security-Masterclass/issues) | [Contact Umar Farooq](mailto:contact@itsumarfarooq.com)
 
 ---
 

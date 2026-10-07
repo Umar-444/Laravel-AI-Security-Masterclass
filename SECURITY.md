@@ -6,26 +6,31 @@ We actively support security updates for the following versions:
 
 | Version | Supported | PHP Required | Laravel Required |
 |---|---|---|---|
-| Latest (v1.x) | âœ… Active | PHP 8.2+ (8.4 recommended) | Laravel 11+ (13 recommended) |
-| Older versions | â‌Œ Unsupported | â€” | â€” |
+| Latest (v1.x) | ✅ Active | PHP 8.2+ (8.4 recommended) | Laravel 11+ (13 recommended) |
+| Older versions | ❌ Unsupported | — | — |
 
-> **âڑ ï¸ڈ End-of-Life Notice:** PHP 8.1 reached EOL on November 25, 2024. Laravel 10 reached EOL on February 4, 2025. These are **no longer supported** and will not receive security updates.
+> **⚠️ End-of-Life Notice:** PHP 8.1 reached EOL on November 25, 2024. Laravel 10 reached EOL on February 4, 2025. These are **no longer supported** and will not receive security updates.
 
 ## Reporting a Vulnerability
 
 If you discover a security vulnerability in this repository, please report it **responsibly**:
 
-### Preferred Method â€” GitHub Private Security Advisories
+### Preferred Method — GitHub Private Security Advisories
 
 Use GitHub's built-in Private Security Advisory system (no public exposure):
 
-ًں‘‰ **[Report a Security Vulnerability](https://github.com/Umar-444/Laravel-AI-Security-Masterclass/security/advisories/new)**
+👉 **[Report a Security Vulnerability](https://github.com/Umar-444/Laravel-AI-Security-Masterclass/security/advisories/new)**
 
-### Alternative â€” Email
+### Alternative — Direct Contact
 
-If you cannot use GitHub Advisories, email us directly:
+If you cannot use GitHub Advisories, contact us directly:
 
-- **Email**: Umar@Worldwebtree.com
+- 📧 **Email**: [contact@itsumarfarooq.com](mailto:contact@itsumarfarooq.com)
+- 🌐 **Website**: [itsumarfarooq.com](https://itsumarfarooq.com)
+- 🏢 **Company**: [Worldwebtree.com](https://worldwebtree.com)
+- 💼 **LinkedIn**: [linkedin.com/in/umar444](https://www.linkedin.com/in/umar444)
+- 🐦 **X (Twitter)**: [@umartechtalks](https://x.com/umartechtalks)
+- 🐙 **GitHub**: [github.com/umar-444](https://github.com/umar-444)
 - **Subject**: `[SECURITY VULNERABILITY] Brief description`
 - **Include**: Reproduction steps, affected files/versions, potential impact, and suggested fix (if any)
 
@@ -41,11 +46,11 @@ If you cannot use GitHub Advisories, email us directly:
 
 This repository contains examples and documentation for implementing security best practices in PHP 8.4 and Laravel 13 applications. All code examples are kept up to date with:
 
-- **NIST SP 800-63B** (2024 revision) â€” Digital Identity Guidelines
+- **NIST SP 800-63B** (2024 revision) — Digital Identity Guidelines
 - **OWASP Top 10** (2025 edition)
 - **OWASP API Security Top 10** (2023 edition)
-- **FIDO2 / WebAuthn** â€” Passkey authentication standards
-- **PCI DSS 4.0** â€” Payment Card Industry standards
+- **FIDO2 / WebAuthn** — Passkey authentication standards
+- **PCI DSS 4.0** — Payment Card Industry standards
 
 ## Scope
 
