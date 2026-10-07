@@ -1,4 +1,6 @@
-# API Security Basics
+# API Security Basics — Laravel 13 / PHP 8.4
+
+> **Updated:** October 2026 — Aligned with **OWASP API Security Top 10 (2023 edition)** and Laravel 13 / Sanctum 4.x.
 
 ## Why API Security Matters
 
@@ -9,12 +11,158 @@ APIs are the backbone of modern web applications, enabling communication between
 - **Public exposure** - APIs are designed to be accessible from external sources
 - **Complex attack surface** - APIs handle various input formats and authentication methods
 
-### API Security Statistics
+### API Security Statistics (2025)
 
 - **95%** of organizations experienced API security incidents in the past year
 - **83%** of web traffic is API-based
-- **34%** of attacks target APIs specifically
-- **Average cost** of API data breach: $4.35 million
+- **Over 50%** of attacks now target APIs specifically (Cloudflare 2025 report)
+- **Average cost** of API data breach: $4.87 million (IBM 2025)
+
+---
+
+## 🔴 OWASP API Security Top 10 — 2023 Edition
+
+> The **2019 list is outdated**. Use the **2023 edition** for all security reviews.
+
+| # | Risk | Description | Laravel Mitigation |
+|---|---|---|---|
+| **API1:2023** | Broken Object Level Authorization | Accessing another user's data via ID manipulation | Validate ownership in every controller action with `Policy` |
+| **API2:2023** | Broken Authentication | Weak or missing authentication | Use Sanctum 4.x / Passport — never roll custom token schemes |
+| **API3:2023** | Broken Object Property Level Authorization | Exposing internal fields via mass assignment | Use `$fillable` strictly — `$guarded = []` is forbidden |
+| **API4:2023** | Unrestricted Resource Consumption | No rate limiting — DoS or abuse | `RateLimiter::for()` with per-user and per-IP limits |
+| **API5:2023** | Broken Function Level Authorization | Accessing admin functions without authorization | Gates/Policies on every sensitive endpoint |
+| **API6:2023** | Unrestricted Access to Sensitive Business Flows | Abusing multi-step flows (e.g., checkout, password reset) | Multi-step flow protection + rate limiting on flows |
+| **API7:2023** | Server Side Request Forgery (SSRF) | Making the server fetch internal URLs via user input | Validate and allowlist all outbound URLs |
+| **API8:2023** | Security Misconfiguration | Debug mode on, version headers exposed, CORS open | `APP_DEBUG=false`, remove `X-Powered-By`, strict CORS |
+| **API9:2023** | Improper Inventory Management | Undocumented shadow APIs, old API versions running | API versioning, remove unused routes, document everything |
+| **API10:2023** | Unsafe Consumption of APIs | Trusting third-party API responses without validation | Validate and sanitize all external API data |
+
+### API1:2023 — Broken Object Level Authorization (Laravel Example)
+
+```php
+<?php
+namespace App\Http\Controllers\Api;
+
+use App\Models\Invoice;
+use Illuminate\Http\Request;
+
+class InvoiceController extends Controller
+{
+    public function show(Request $request, int $invoiceId)
+    {
+        $invoice = Invoice::findOrFail($invoiceId);
+
+        // ✅ Always authorize ownership — NEVER just find by ID
+        $this->authorize('view', $invoice);
+
+        return response()->json($invoice);
+    }
+
+    // ❌ VULNERABLE — no ownership check
+    public function showVulnerable(int $invoiceId)
+    {
+        return Invoice::findOrFail($invoiceId); // Any user can access any invoice
+    }
+}
+```
+
+### API3:2023 — Broken Object Property Level Authorization (Laravel Example)
+
+```php
+<?php
+// app/Models/User.php
+class User extends Model
+{
+    // ✅ Explicit allowlist — only these fields can be mass-assigned
+    protected $fillable = ['name', 'email', 'password'];
+
+    // ❌ These fields are protected and never in $fillable:
+    // 'is_admin', 'role', 'email_verified_at', 'two_factor_secret'
+}
+
+// app/Http/Controllers/Api/UserController.php
+public function update(Request $request)
+{
+    $validated = $request->validate([
+        'name'  => ['required', 'string', 'max:255'],
+        'email' => ['required', 'email:rfc,dns'],
+        // ✅ Never accept 'is_admin', 'role', or sensitive fields from input
+    ]);
+
+    auth()->user()->update($validated);
+}
+```
+
+### API4:2023 — Unrestricted Resource Consumption (Laravel Rate Limiting)
+
+```php
+<?php
+// routes/api.php — Laravel 13 Rate Limiting
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Cache\RateLimiting\Limit;
+
+RateLimiter::for('api', function (Request $request) {
+    return $request->user()
+        ? Limit::perMinute(120)->by($request->user()->id)
+        : Limit::perMinute(20)->by($request->ip());
+});
+
+// Stricter limit for auth endpoints
+RateLimiter::for('auth', function (Request $request) {
+    return [
+        Limit::perMinute(5)->by($request->ip()),          // IP-based
+        Limit::perMinute(10)->by($request->input('email')), // Email-based
+    ];
+});
+```
+
+### API7:2023 — SSRF Prevention (Laravel Example)
+
+```php
+<?php
+namespace App\Services;
+
+use Illuminate\Support\Facades\Http;
+
+class ExternalApiService
+{
+    // ✅ Allowlist of permitted external domains
+    private const ALLOWED_HOSTS = [
+        'api.stripe.com',
+        'api.sendgrid.com',
+        'hooks.slack.com',
+    ];
+
+    public function fetchFromUrl(string $url): array
+    {
+        $parsed = parse_url($url);
+
+        // ✅ Block private/internal IPs
+        if (filter_var($parsed['host'] ?? '', FILTER_VALIDATE_IP)) {
+            $ip = $parsed['host'];
+            if (
+                filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false
+            ) {
+                throw new \InvalidArgumentException('Private/internal IP addresses are not allowed');
+            }
+        }
+
+        // ✅ Only allowlisted domains
+        if (!in_array($parsed['host'] ?? '', self::ALLOWED_HOSTS, true)) {
+            throw new \InvalidArgumentException("Host not in allowlist: {$parsed['host']}");
+        }
+
+        // ✅ HTTPS only
+        if (($parsed['scheme'] ?? '') !== 'https') {
+            throw new \InvalidArgumentException('Only HTTPS URLs are permitted');
+        }
+
+        return Http::timeout(10)->get($url)->json();
+    }
+}
+```
+
+---
 
 ## API Authentication Methods
 

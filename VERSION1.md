@@ -1,4 +1,4 @@
-# Version 1 Roadmap: PHP & Laravel Security Best Practices
+# Version 1 Roadmap — Laravel AI Security Masterclass
 
 ## 🎯 Version 1 Overview
 
@@ -285,7 +285,7 @@ Version 1 provides developers with:
 ## 🔮 Future Versions - PLANNED
 
 ### Version 2: Advanced Security Topics
-**Target Q2 2025**
+**Target Q1 2027** *(Originally planned Q2 2025 — updated October 2026)*
 
 #### Planned Topics:
 - **Advanced XSS Protection** - DOM-based XSS and CSP bypass techniques
@@ -302,7 +302,7 @@ Version 1 provides developers with:
 - Performance-optimized security measures
 
 ### Version 3: Infrastructure & Deployment Security
-**Target Q3 2025**
+**Target Q2 2027** *(Originally planned Q3 2025 — updated October 2026)*
 
 #### Planned Topics:
 - **Container Security** - Docker and Kubernetes security best practices
@@ -319,7 +319,7 @@ Version 1 provides developers with:
 - Monitoring dashboard implementations
 
 ### Version 4: Compliance & Enterprise Security
-**Target Q4 2025**
+**Target Q3 2027** *(Originally planned Q4 2025 — updated October 2026)*
 
 #### Planned Topics:
 - **GDPR Compliance** - Data protection and privacy
@@ -335,16 +335,19 @@ Version 1 provides developers with:
 - Enterprise integration examples
 - Regulatory reporting frameworks
 
-### Version 5: Emerging Threats & AI Security
-**Target Q1 2026**
+### Version 5: Emerging Threats, AI Security & Quantum-Safe Cryptography
+**Target Q4 2027** *(Originally planned Q1 2026 — updated October 2026)*
 
 #### Planned Topics:
-- **AI/ML Security** - Protecting machine learning systems
+- **AI/ML Security** - Protecting machine learning systems and LLM-powered features
+- **Prompt Injection Defense** - Securing Laravel apps with embedded AI/LLM features
 - **IoT Security** - Internet of Things application security
 - **Blockchain Security** - Smart contract and crypto security
-- **Zero Trust Architecture** - Modern security models
-- **Quantum-Safe Cryptography** - Post-quantum security
-- **AI-Powered Security** - Automated threat detection
+- **Zero Trust Architecture** - Modern security models for microservices
+- **Post-Quantum Cryptography** - NIST PQC standards (CRYSTALS-Kyber, CRYSTALS-Dilithium)
+- **AI-Powered Threat Detection** - Automated anomaly detection and response
+- **Laravel 13+ Security** - Security features in latest Laravel versions
+- **PHP 8.4/8.5 Security** - New PHP security-relevant language features
 
 ## 📈 Version 1 Success Metrics
 
@@ -394,7 +397,7 @@ Version 1 is complete, but we want your feedback!
 - **What should Version 2 cover first?** Priority suggestions
 - **Integration ideas?** How to use this in your workflow?
 
-**Share your feedback:** [GitHub Discussions](../../discussions) | [Issues](../../issues)
+**Share your feedback:** [GitHub Discussions](https://github.com/Umar-444/Laravel-AI-Security-Masterclass/discussions) | [Issues](https://github.com/Umar-444/Laravel-AI-Security-Masterclass/issues)
 
 ---
 
@@ -404,8 +407,8 @@ Version 1 delivers a **complete, practical foundation** for PHP and Laravel secu
 
 **Ready to build secure applications?** Start with the [Security Checklist](docs/Checklist.md) and work through the Version 1 topics systematically.
 
-**Want to contribute?** Check our [Contributing Guide](../../CONTRIBUTING.md) and join the security community!
+**Want to contribute?** Check our [Contributing Guide](CONTRIBUTING.md) and join the security community!
 
 ---
 
-*Version 1 Released: November 2025* 🚀
+*Version 1 Released: November 2025 | Last Updated: October 2026 — Laravel 13 / PHP 8.4* 🚀

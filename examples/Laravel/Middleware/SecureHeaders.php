@@ -4,93 +4,93 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
- * Security Headers Middleware
+ * Security Headers Middleware — Laravel 13 / PHP 8.4
  *
- * This middleware adds security headers to HTTP responses
- * to protect against common web vulnerabilities
+ * Implements modern HTTP security headers per OWASP 2025 recommendations.
+ * Registration: bootstrap/app.php → withMiddleware()
+ *
+ * NOTE: X-XSS-Protection has been intentionally REMOVED.
+ * It is deprecated and removed in Chrome, Firefox, Edge, and Safari.
+ * Use a strict Content-Security-Policy instead.
  */
 class SecureHeaders
 {
     /**
-     * Security headers configuration
+     * Core security headers applied to every response.
+     * X-XSS-Protection is intentionally excluded — it is deprecated.
      */
-    private $headers = [
-        // Prevent clickjacking attacks
-        'X-Frame-Options' => 'SAMEORIGIN',
+    private array $headers = [
+        // Prevent clickjacking — use CSP frame-ancestors as primary control
+        'X-Frame-Options' => 'DENY',
 
-        // Prevent MIME type sniffing
+        // Prevent MIME type sniffing attacks
         'X-Content-Type-Options' => 'nosniff',
 
-        // Enable XSS protection in older browsers
-        'X-XSS-Protection' => '1; mode=block',
-
-        // Referrer Policy
+        // Control referrer information sent cross-origin
         'Referrer-Policy' => 'strict-origin-when-cross-origin',
 
-        // Content Security Policy (adjust according to your needs)
-        'Content-Security-Policy' => "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; media-src 'self'; object-src 'none'; child-src 'self'; frame-ancestors 'self'; form-action 'self'; upgrade-insecure-requests",
+        // Restrict browser feature/API access
+        'Permissions-Policy' => 'camera=(), microphone=(), geolocation=(), gyroscope=(), magnetometer=(), payment=(), usb=(), interest-cohort=()',
 
-        // HTTP Strict Transport Security
-        'Strict-Transport-Security' => 'max-age=31536000; includeSubDomains; preload',
-
-        // Feature Policy / Permissions Policy
-        'Permissions-Policy' => 'camera=(), microphone=(), geolocation=(), gyroscope=(), magnetometer=(), payment=(), usb=()',
-
-        // Remove server information
-        'X-Powered-By' => null,
-
-        // Cross-Origin Embedder Policy
-        'Cross-Origin-Embedder-Policy' => 'credentialless',
-
-        // Cross-Origin Opener Policy
+        // Isolate browsing context (required for SharedArrayBuffer)
         'Cross-Origin-Opener-Policy' => 'same-origin',
 
-        // Cross-Origin Resource Policy
+        // Require CORP headers on cross-origin resources
+        'Cross-Origin-Embedder-Policy' => 'require-corp',
+
+        // Prevent cross-origin resource reads
         'Cross-Origin-Resource-Policy' => 'same-origin',
     ];
 
     /**
-     * Environment-specific header adjustments
+     * Environment-specific CSP overrides.
+     * Production uses strict nonce-based CSP; local is relaxed for dev tools.
      */
-    private $envHeaders = [
-        'local' => [
-            // Relax CSP for local development
-            'Content-Security-Policy' => "default-src 'self' 'unsafe-inline' 'unsafe-eval' localhost:* 127.0.0.1:*; script-src 'self' 'unsafe-inline' 'unsafe-eval' localhost:* 127.0.0.1:*; style-src 'self' 'unsafe-inline' localhost:* 127.0.0.1:*; img-src 'self' data: https: localhost:* 127.0.0.1:*; font-src 'self' data: localhost:* 127.0.0.1:*; connect-src 'self' localhost:* 127.0.0.1:* ws: wss:",
-        ],
-        'testing' => [
-            // Minimal headers for testing
-            'Content-Security-Policy' => "default-src 'self'",
-        ],
+    private array $cspByEnvironment = [
+        'production' => null,   // Nonce-based CSP applied dynamically below
+        'staging'    => null,   // Same as production
+        'local'      => "default-src 'self' 'unsafe-inline' 'unsafe-eval' localhost:* 127.0.0.1:* ws: wss:; img-src 'self' data: https: localhost:* 127.0.0.1:*; font-src 'self' data: localhost:*; connect-src 'self' localhost:* 127.0.0.1:* ws: wss:",
+        'testing'    => "default-src 'self'",
     ];
 
     /**
-     * Handle an incoming request
+     * Handle an incoming request — attach security headers to response.
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): SymfonyResponse
     {
         $response = $next($request);
 
-        // Add security headers
+        // Remove server fingerprinting headers
+        $response->headers->remove('X-Powered-By');
+        $response->headers->remove('Server');
+
+        // Apply core security headers
         foreach ($this->headers as $header => $value) {
-            if ($value === null) {
-                // Remove header if value is null
-                $response->headers->remove($header);
-            } else {
-                $response->headers->set($header, $value);
-            }
+            $response->headers->set($header, $value);
         }
 
-        // Apply environment-specific adjustments
-        $environment = app()->environment();
-        if (isset($this->envHeaders[$environment])) {
-            foreach ($this->envHeaders[$environment] as $header => $value) {
-                $response->headers->set($header, $value);
-            }
+        // Apply environment-appropriate CSP
+        $this->applyContentSecurityPolicy($request, $response);
+
+        // HSTS — only apply on HTTPS connections, never on HTTP
+        if ($request->secure()) {
+            $response->headers->set(
+                'Strict-Transport-Security',
+                'max-age=31536000; includeSubDomains; preload'
+            );
         }
 
-        // Add additional headers for API routes
+        // CSP Reporting endpoint — modern Reporting-Endpoints header
+        $response->headers->set(
+            'Reporting-Endpoints',
+            'csp-endpoint="' . config('app.url') . '/api/csp-report"'
+        );
+
+        // API version header for API routes
         if ($request->is('api/*')) {
             $response->headers->set('X-API-Version', config('app.api_version', '1.0'));
         }
@@ -99,27 +99,50 @@ class SecureHeaders
     }
 
     /**
-     * Customize headers for specific use cases
+     * Build and apply the Content Security Policy.
+     * Uses nonces in production for inline script/style safety.
+     * report-uri is deprecated — uses modern report-to directive.
      */
-    public static function customizeHeaders(array $customHeaders): array
+    private function applyContentSecurityPolicy(Request $request, SymfonyResponse $response): void
     {
-        $middleware = new self();
-        return array_merge($middleware->headers, $customHeaders);
+        $env = app()->environment();
+
+        // Local/testing: use relaxed CSP
+        if (isset($this->cspByEnvironment[$env]) && $this->cspByEnvironment[$env] !== null) {
+            $response->headers->set('Content-Security-Policy', $this->cspByEnvironment[$env]);
+            return;
+        }
+
+        // Production/staging: nonce-based strict CSP
+        $nonce = base64_encode(random_bytes(16));
+
+        // Share nonce with views so Blade can use it for inline scripts
+        app()->instance('csp-nonce', $nonce);
+
+        $directives = [
+            "default-src 'self'",
+            "script-src 'self' 'nonce-{$nonce}'",
+            "style-src 'self' 'nonce-{$nonce}' https://fonts.googleapis.com",
+            "img-src 'self' data: https:",
+            "font-src 'self' https://fonts.gstatic.com",
+            "connect-src 'self'",
+            "media-src 'self'",
+            "object-src 'none'",
+            "frame-ancestors 'none'",        // Replaces X-Frame-Options
+            "form-action 'self'",
+            "base-uri 'self'",
+            "upgrade-insecure-requests",
+            "report-to csp-endpoint",        // Modern reporting — replaces deprecated report-uri
+        ];
+
+        $response->headers->set('Content-Security-Policy', implode('; ', $directives));
     }
 
     /**
-     * Get current headers configuration
+     * Get current headers configuration (useful for testing).
      */
     public function getHeaders(): array
     {
         return $this->headers;
-    }
-
-    /**
-     * Set custom headers (for testing or dynamic configuration)
-     */
-    public function setHeaders(array $headers): void
-    {
-        $this->headers = array_merge($this->headers, $headers);
     }
 }

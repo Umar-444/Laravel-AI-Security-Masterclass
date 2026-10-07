@@ -597,7 +597,7 @@ class DatabaseSessionHandler implements SessionHandlerInterface
 // 6. LARAVEL SESSION EXAMPLES
 // =============================================================================
 
-namespace App\Http\Controllers;
+// In a Laravel app: namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;

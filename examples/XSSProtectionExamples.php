@@ -381,7 +381,7 @@ class ContextEscaping
 // 5. LARAVEL XSS PROTECTION EXAMPLES
 // =============================================================================
 
-namespace App\View\Components;
+// In a Laravel app: namespace App\View\Components;
 
 use Illuminate\View\Component;
 
@@ -417,7 +417,7 @@ class SecureUserCard extends Component
 }
 
 // Laravel Controller with XSS protection
-namespace App\Http\Controllers;
+// In a Laravel app: namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

@@ -4,20 +4,56 @@
 
 We actively support security updates for the following versions:
 
-| Version | Supported          |
-| ------- | ------------------ |
-| Latest  | :white_check_mark: |
+| Version | Supported | PHP Required | Laravel Required |
+|---|---|---|---|
+| Latest (v1.x) | âœ… Active | PHP 8.2+ (8.4 recommended) | Laravel 11+ (13 recommended) |
+| Older versions | â‌Œ Unsupported | â€” | â€” |
+
+> **âڑ ï¸ڈ End-of-Life Notice:** PHP 8.1 reached EOL on November 25, 2024. Laravel 10 reached EOL on February 4, 2025. These are **no longer supported** and will not receive security updates.
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability, please report it to us as follows:
+If you discover a security vulnerability in this repository, please report it **responsibly**:
 
-1. **DO NOT** create a public GitHub issue
-2. Email security@yourdomain.com with details
-3. Include reproduction steps and potential impact
-4. We will acknowledge receipt within 48 hours
-5. We will provide regular updates on our progress
+### Preferred Method â€” GitHub Private Security Advisories
+
+Use GitHub's built-in Private Security Advisory system (no public exposure):
+
+ًں‘‰ **[Report a Security Vulnerability](https://github.com/Umar-444/Laravel-AI-Security-Masterclass/security/advisories/new)**
+
+### Alternative â€” Email
+
+If you cannot use GitHub Advisories, email us directly:
+
+- **Email**: Umar@Worldwebtree.com
+- **Subject**: `[SECURITY VULNERABILITY] Brief description`
+- **Include**: Reproduction steps, affected files/versions, potential impact, and suggested fix (if any)
+
+### Process & Timeline
+
+1. **DO NOT** create a public GitHub issue for security vulnerabilities
+2. We will **acknowledge receipt within 48 hours**
+3. We will provide **weekly status updates**
+4. We will coordinate a **responsible disclosure timeline** (typically 90 days)
+5. After the fix is deployed, we will **credit you** in the release notes (if desired)
 
 ## Security Best Practices
 
-This repository contains examples and documentation for implementing security best practices in PHP and Laravel applications.
+This repository contains examples and documentation for implementing security best practices in PHP 8.4 and Laravel 13 applications. All code examples are kept up to date with:
+
+- **NIST SP 800-63B** (2024 revision) â€” Digital Identity Guidelines
+- **OWASP Top 10** (2025 edition)
+- **OWASP API Security Top 10** (2023 edition)
+- **FIDO2 / WebAuthn** â€” Passkey authentication standards
+- **PCI DSS 4.0** â€” Payment Card Industry standards
+
+## Scope
+
+This security policy covers:
+- All documentation files in `docs/`
+- All code examples in `examples/`
+- Configuration recommendations
+- Deployment guidance
+
+Out of scope:
+- Third-party packages referenced in examples (report those to the respective maintainers)

@@ -270,7 +270,7 @@ class OutputSanitizer
 // LARAVEL FORM REQUEST EXAMPLES
 // =============================================================================
 
-namespace App\Http\Requests;
+// In a Laravel app: namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -336,9 +336,9 @@ class CreateUserRequest extends FormRequest
 // LARAVEL CONTROLLER WITH VALIDATION
 // =============================================================================
 
-namespace App\Http\Controllers;
+// In a Laravel app: namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateUserRequest;
+// use App\Http\Requests\CreateUserRequest; // already declared above
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
@@ -451,12 +451,12 @@ class UserController extends Controller
 // CUSTOM VALIDATION RULES
 // =============================================================================
 
-namespace App\Rules;
+// In a Laravel app: namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\Rule as ValidationRuleContract;
 use Illuminate\Support\Facades\Http;
 
-class StrongPassword implements Rule
+class StrongPassword implements ValidationRuleContract
 {
     public function passes($attribute, $value): bool
     {

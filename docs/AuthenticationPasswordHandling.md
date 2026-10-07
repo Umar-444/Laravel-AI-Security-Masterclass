@@ -40,13 +40,14 @@ $hash = password_hash('password', PASSWORD_BCRYPT, [
 ]);
 ```
 
-#### Argon2 ✅ (Modern alternative)
+#### Argon2id ✅ (Modern Standard — OWASP 2024 Recommended)
 ```php
-// MOST SECURE - Winner of Password Hashing Competition
+// MOST SECURE — Winner of Password Hashing Competition
+// OWASP Authentication Cheat Sheet 2024 parameters:
 $hash = password_hash('password', PASSWORD_ARGON2ID, [
-    'memory_cost' => 65536,  // 64MB
-    'time_cost' => 4,        // 4 iterations
-    'threads' => 3           // 3 parallel threads
+    'memory_cost' => 65536,  // 64MB minimum
+    'time_cost'   => 3,      // 3 iterations (OWASP 2024)
+    'threads'     => 1,      // 1 thread (optimal for PHP web)
 ]);
 ```
 
@@ -84,26 +85,26 @@ $hash = password_hash('password', PASSWORD_ARGON2ID);
 #### 3. Use Appropriate Cost Factors
 ```php
 <?php
-// Balance security vs performance
+// Balance security vs performance — OWASP 2024 Argon2id targets
 $options = [
-    // bcrypt cost: 10-14 (doubles time for each increase)
+    // bcrypt cost: 10-14 (doubles time per increase) — minimum 12
     'cost' => 12,
 
-    // Argon2 parameters
-    'memory_cost' => PASSWORD_ARGON2_DEFAULT_MEMORY_COST,  // 64MB
-    'time_cost' => PASSWORD_ARGON2_DEFAULT_TIME_COST,      // 4
-    'threads' => PASSWORD_ARGON2_DEFAULT_THREADS,          // 3
+    // Argon2id — OWASP 2024 minimum recommended parameters
+    'memory_cost' => 65536,  // 64MB
+    'time_cost'   => 3,      // 3 iterations
+    'threads'     => 1,      // 1 thread
 ];
 
-// Hash should take 0.1-0.5 seconds
+// Target: hash should take 100–500ms on your hardware
 $start = microtime(true);
-$hash = password_hash($password, PASSWORD_ARGON2ID, $options);
-$time = microtime(true) - $start;
+$hash  = password_hash($password, PASSWORD_ARGON2ID, $options);
+$time  = microtime(true) - $start;
 
 if ($time > 0.5) {
-    // Too slow - reduce cost
+    // Too slow — reduce memory_cost or time_cost
 } elseif ($time < 0.1) {
-    // Too fast - increase cost
+    // Too fast — increase memory_cost or time_cost
 }
 ```
 
@@ -116,14 +117,15 @@ Sessions track authenticated users across requests. Poor session management lead
 #### Secure Session Configuration
 ```php
 <?php
-// Configure sessions securely
-ini_set('session.cookie_secure', '1');     // HTTPS only
-ini_set('session.cookie_httponly', '1');   // Prevent XSS theft
+// Configure sessions securely — ALL settings must be set before session_start()
+ini_set('session.cookie_secure', '1');        // HTTPS only
+ini_set('session.cookie_httponly', '1');      // Block JavaScript (XSS theft)
 ini_set('session.cookie_samesite', 'Strict'); // CSRF protection
-ini_set('session.use_only_cookies', '1');  // No session IDs in URLs
-ini_set('session.cookie_lifetime', '0');   // Session cookies (expire on browser close)
+ini_set('session.use_only_cookies', '1');     // No session IDs in URLs
+ini_set('session.use_strict_mode', '1');      // Reject unrecognized session IDs
+ini_set('session.cookie_lifetime', '0');      // Session cookies (expire on browser close)
 
-// Set session name
+// Set session name — use sha256, NOT md5 (deprecated)
 session_name('SECURE_APP_SESSION');
 
 // Start session
@@ -137,19 +139,21 @@ class SecureSession
 {
     public static function startSecureSession(): void
     {
-        // Secure configuration
+        // Secure configuration — must be set before session_start()
         ini_set('session.cookie_secure', '1');
         ini_set('session.cookie_httponly', '1');
         ini_set('session.cookie_samesite', 'Strict');
         ini_set('session.use_only_cookies', '1');
+        ini_set('session.use_strict_mode', '1');   // NEW: reject unrecognized session IDs
 
-        session_name('secure_app_' . md5(__FILE__));
+        // sha256 — NOT md5 (md5 is cryptographically broken)
+        session_name('secure_app_' . hash('sha256', __FILE__));
         session_start();
 
-        // Regenerate session ID periodically
+        // Regenerate session ID periodically (every 5 minutes)
         if (!isset($_SESSION['created'])) {
             $_SESSION['created'] = time();
-        } elseif (time() - $_SESSION['created'] > 300) { // 5 minutes
+        } elseif (time() - $_SESSION['created'] > 300) {
             session_regenerate_id(true);
             $_SESSION['created'] = time();
         }
@@ -372,9 +376,9 @@ class PasswordPolicy
         $errors = [];
         $score = 0;
 
-        // Length check
-        if (strlen($password) < 8) {
-            $errors[] = 'Password must be at least 8 characters';
+        // Length check — NIST SP 800-63B 2024: minimum 15 characters
+        if (strlen($password) < 15) {
+            $errors[] = 'Password must be at least 15 characters (NIST SP 800-63B 2024)';
         } else {
             $score += 20;
         }
@@ -452,15 +456,16 @@ class PasswordPolicy
         $allChars = $lowercase . $uppercase . $numbers . $symbols;
 
         // Ensure at least one of each type
-        $password = '';
-        $password .= $lowercase[rand(0, strlen($lowercase) - 1)];
-        $password .= $uppercase[rand(0, strlen($uppercase) - 1)];
-        $password .= $numbers[rand(0, strlen($numbers) - 1)];
-        $password .= $symbols[rand(0, strlen($symbols) - 1)];
+        // ✅ random_int() is cryptographically secure — NEVER use rand() for security purposes
+        $password  = '';
+        $password .= $lowercase[random_int(0, strlen($lowercase) - 1)];
+        $password .= $uppercase[random_int(0, strlen($uppercase) - 1)];
+        $password .= $numbers[random_int(0, strlen($numbers) - 1)];
+        $password .= $symbols[random_int(0, strlen($symbols) - 1)];
 
-        // Fill the rest randomly
+        // Fill the rest — cryptographically secure
         for ($i = 4; $i < $length; $i++) {
-            $password .= $allChars[rand(0, strlen($allChars) - 1)];
+            $password .= $allChars[random_int(0, strlen($allChars) - 1)];
         }
 
         // Shuffle to avoid predictable patterns
@@ -475,14 +480,14 @@ class PasswordPolicy
 
 ```php
 <?php
-// config/auth.php
+// config/auth.php — Laravel 13 guards
 'guards' => [
     'web' => [
-        'driver' => 'session',
+        'driver'   => 'session',
         'provider' => 'users',
     ],
     'api' => [
-        'driver' => 'sanctum',
+        'driver'   => 'sanctum',  // Laravel Sanctum 4.x
         'provider' => null,
     ],
 ],
@@ -514,10 +519,14 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed', // Laravel 10+ automatically hashes
-    ];
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password'          => 'hashed',     // Laravel 11+ automatic hashing via HashedCast
+            'two_factor_secret' => 'encrypted',  // Encrypted at rest using APP_KEY
+        ];
+    }
 
     // Secure password hashing
     public function setPasswordAttribute(string $password): void

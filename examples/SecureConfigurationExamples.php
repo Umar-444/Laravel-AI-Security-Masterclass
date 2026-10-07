@@ -758,7 +758,7 @@ class ServerSecurity
 // 5. LARAVEL SECURE CONFIGURATION
 // =============================================================================
 
-namespace App\Http\Middleware;
+// In a Laravel app: namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -821,7 +821,7 @@ class SecurityHeadersMiddleware
 }
 
 // Laravel Service Provider for secure configuration
-namespace App\Providers;
+// In a Laravel app: namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;

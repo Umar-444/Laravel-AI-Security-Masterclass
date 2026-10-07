@@ -478,7 +478,7 @@ class SecondOrderInjection
 // 7. LARAVEL ELOQUENT & QUERY BUILDER EXAMPLES
 // =============================================================================
 
-namespace App\Models;
+// In a Laravel app: namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -502,9 +502,9 @@ class User extends Model
     }
 }
 
-namespace App\Http\Controllers;
+// In a Laravel app: namespace App\Http\Controllers;
 
-use App\Models\User;
+// use App\Models\User; // already declared above
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 

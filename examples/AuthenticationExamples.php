@@ -3,7 +3,11 @@
 /**
  * Authentication Examples: Password Hashing, Session Management, and Security
  *
- * Comprehensive examples of secure authentication practices in PHP
+ * Comprehensive examples of secure authentication practices in PHP 8.4 / Laravel 13.
+ * Updated to NIST SP 800-63B (2024) and OWASP Authentication Cheat Sheet (2024).
+ *
+ * NIST 2024: Minimum password length is 15 characters.
+ * OWASP 2024: Argon2id with memory_cost=65536, time_cost=3, threads=1.
  */
 
 declare(strict_types=1);
@@ -19,10 +23,11 @@ class PasswordSecurity
      */
     public static function hashPassword(string $password): string
     {
+        // OWASP Authentication Cheat Sheet 2024 — Argon2id recommended parameters
         return password_hash($password, PASSWORD_ARGON2ID, [
-            'memory_cost' => 65536,  // 64MB
-            'time_cost' => 4,        // 4 iterations
-            'threads' => 3           // 3 parallel threads
+            'memory_cost' => 65536,  // 64MB minimum (use 128MB for high-security)
+            'time_cost'   => 3,      // 3 iterations (OWASP 2024 recommendation)
+            'threads'     => 1,      // 1 thread (recommended for PHP web contexts)
         ]);
     }
 
@@ -41,8 +46,8 @@ class PasswordSecurity
     {
         return password_needs_rehash($hash, PASSWORD_ARGON2ID, [
             'memory_cost' => 65536,
-            'time_cost' => 4,
-            'threads' => 3
+            'time_cost'   => 3,
+            'threads'     => 1,
         ]);
     }
 
@@ -80,9 +85,9 @@ class PasswordSecurity
         $errors = [];
         $score = 0;
 
-        // Length
-        if (strlen($password) < 8) {
-            $errors[] = 'At least 8 characters required';
+        // Length — NIST SP 800-63B 2024: minimum 15 characters
+        if (strlen($password) < 15) {
+            $errors[] = 'At least 15 characters required (NIST SP 800-63B 2024)';
         } else {
             $score += 25;
         }
@@ -140,15 +145,16 @@ class SecureSessionManager
 
     public static function initialize(): void
     {
-        // Secure session configuration
-        ini_set('session.cookie_secure', '1');      // HTTPS only
-        ini_set('session.cookie_httponly', '1');    // Prevent XSS
+        // Secure session configuration — all must be set before session_start()
+        ini_set('session.cookie_secure', '1');        // HTTPS only
+        ini_set('session.cookie_httponly', '1');      // Block JavaScript (XSS protection)
         ini_set('session.cookie_samesite', 'Strict'); // CSRF protection
-        ini_set('session.use_only_cookies', '1');   // No URL sessions
-        ini_set('session.cookie_lifetime', '0');    // Session cookies
-        ini_set('session.gc_maxlifetime', '1440');  // 24 minutes
+        ini_set('session.use_only_cookies', '1');     // No session IDs in URLs
+        ini_set('session.use_strict_mode', '1');      // Reject unrecognized session IDs
+        ini_set('session.cookie_lifetime', '0');      // Session cookies (expire on close)
+        ini_set('session.gc_maxlifetime', '1800');    // Match SESSION_TIMEOUT constant
 
-        // Unique session name per application
+        // Unique session name per application — sha256, NOT md5 (deprecated)
         session_name('secure_app_' . hash('sha256', __DIR__));
 
         session_start();

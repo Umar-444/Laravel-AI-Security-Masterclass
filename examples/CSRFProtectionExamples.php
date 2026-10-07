@@ -503,7 +503,7 @@ class SecureFormGenerator
 // 7. LARAVEL CSRF PROTECTION EXAMPLES
 // =============================================================================
 
-namespace App\Http\Controllers;
+// In a Laravel app: namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

@@ -295,30 +295,32 @@ echo CSPNonceManager::createSecureScript('console.log("Secure inline script");')
 
 ```php
 <?php
-// Enable CSP violation reporting
-header("Content-Security-Policy: default-src 'self'; report-uri /csp-report");
+// ✅ Modern CSP violation reporting — replaces deprecated report-uri
+// Step 1: Define the reporting endpoint
+header('Reporting-Endpoints: csp-endpoint="https://yourdomain.com/api/csp-report"');
 
-// Or with modern report-to directive
+// Step 2: Reference the endpoint in CSP using report-to (NOT report-uri)
 header("Content-Security-Policy: default-src 'self'; report-to csp-endpoint");
-header("Report-To: {\"group\":\"csp-endpoint\",\"max_age\":10886400,\"endpoints\":[{\"url\":\"https://yourdomain.com/csp-report\"}]}");
+
+// Note: report-uri is DEPRECATED. Remove it from all CSP headers.
+// Old (deprecated — do not use):
+// header("Content-Security-Policy: default-src 'self'; report-uri /csp-report");
 ```
 
-## X-XSS-Protection Header
+## X-XSS-Protection Header — DEPRECATED ⛔
 
-### XSS Auditor
-
-The X-XSS-Protection header controls the browser's built-in XSS filter.
+> **Do NOT use `X-XSS-Protection`.** This header has been **removed from Chrome, Firefox, Edge, and Safari**. It can introduce new XSS vulnerabilities in older browsers and is no longer recommended by OWASP.
+>
+> **The correct replacement is a strict `Content-Security-Policy`** (see the CSP section above).
 
 ```php
 <?php
-// Enable XSS protection
-header('X-XSS-Protection: 1; mode=block');
+// ❌ REMOVE THIS — Deprecated and harmful:
+// header('X-XSS-Protection: 1; mode=block');
 
-// Disable XSS protection (not recommended)
-header('X-XSS-Protection: 0');
+// ✅ USE THIS INSTEAD — Strict CSP with nonces:
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-{$nonce}'; object-src 'none'; base-uri 'self'");
 ```
-
-**Note**: This header is deprecated in modern browsers in favor of CSP, but still provides protection for older browsers.
 
 ## Strict-Transport-Security (HSTS)
 
@@ -438,60 +440,83 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Security Headers Middleware — Laravel 13
+ *
+ * NOTE: X-XSS-Protection is intentionally REMOVED. It is deprecated and
+ * removed from Chrome, Firefox, Edge, and Safari. Use CSP with nonces instead.
+ *
+ * Registration: bootstrap/app.php (Laravel 11+) — NOT Kernel.php (removed).
+ */
 class SecurityHeadersMiddleware
 {
     private array $securityHeaders = [
-        'X-Frame-Options' => 'DENY',
-        'X-Content-Type-Options' => 'nosniff',
-        'X-XSS-Protection' => '1; mode=block',
-        'Referrer-Policy' => 'strict-origin-when-cross-origin',
-        'Permissions-Policy' => 'camera=(), microphone=(), geolocation=(), payment=()',
+        'X-Frame-Options'             => 'DENY',
+        'X-Content-Type-Options'      => 'nosniff',
+        // X-XSS-Protection intentionally omitted — DEPRECATED & REMOVED from modern browsers
+        'Referrer-Policy'             => 'strict-origin-when-cross-origin',
+        'Permissions-Policy'          => 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()',
+        'Cross-Origin-Opener-Policy'  => 'same-origin',
+        'Cross-Origin-Embedder-Policy'=> 'require-corp',
+        'Cross-Origin-Resource-Policy'=> 'same-origin',
     ];
 
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         $response = $next($request);
 
-        // Remove Laravel version header
+        // Remove server fingerprinting headers
         $response->headers->remove('X-Powered-By');
+        $response->headers->remove('Server');
 
-        // Set security headers
+        // Apply core security headers
         foreach ($this->securityHeaders as $header => $value) {
             $response->headers->set($header, $value);
         }
 
-        // Content Security Policy
-        $csp = $this->buildContentSecurityPolicy();
+        // Nonce-based CSP — no unsafe-inline
+        $nonce = base64_encode(random_bytes(16));
+        app()->instance('csp-nonce', $nonce);
+        $csp = $this->buildContentSecurityPolicy($nonce);
         $response->headers->set('Content-Security-Policy', $csp);
 
-        // HSTS for HTTPS
+        // Modern CSP reporting — Reporting-Endpoints (replaces deprecated Report-To)
+        $response->headers->set(
+            'Reporting-Endpoints',
+            'csp-endpoint="' . config('app.url') . '/api/csp-report"'
+        );
+
+        // HSTS — only on HTTPS connections
         if ($request->secure()) {
-            $response->headers->set('Strict-Transport-Security',
-                'max-age=31536000; includeSubDomains; preload');
+            $response->headers->set(
+                'Strict-Transport-Security',
+                'max-age=31536000; includeSubDomains; preload'
+            );
         }
 
         return $response;
     }
 
-    private function buildContentSecurityPolicy(): string
+    private function buildContentSecurityPolicy(string $nonce): string
     {
         $policies = [
             "default-src 'self'",
-            "script-src 'self'",
-            "style-src 'self' 'unsafe-inline'",
+            "script-src 'self' 'nonce-{$nonce}'",           // Nonce-based — no unsafe-inline
+            "style-src 'self' 'nonce-{$nonce}'",            // Nonce-based — no unsafe-inline
             "img-src 'self' data: https:",
             "font-src 'self' https://fonts.gstatic.com",
             "connect-src 'self'",
             "media-src 'self'",
             "object-src 'none'",
-            "child-src 'self'",
-            "frame-ancestors 'none'",
+            "frame-ancestors 'none'",                        // Replaces X-Frame-Options
             "form-action 'self'",
+            "base-uri 'self'",
+            "report-to csp-endpoint",                        // Modern reporting
         ];
 
-        // Add upgrade-insecure-requests in production
-        if (app()->environment('production')) {
+        if (app()->environment('production', 'staging')) {
             $policies[] = "upgrade-insecure-requests";
         }
 
@@ -500,23 +525,29 @@ class SecurityHeadersMiddleware
 }
 ```
 
-### Registering Laravel Middleware
+### Registering Laravel Middleware (Laravel 11+)
+
+> ⚠️ **`app/Http/Kernel.php` was removed in Laravel 11.** Use `bootstrap/app.php` instead.
 
 ```php
 <?php
-// In app/Http/Kernel.php
-protected $middleware = [
-    // ... other middleware
-    \App\Http\Middleware\SecurityHeadersMiddleware::class,
-];
+// bootstrap/app.php — Laravel 11 / 12 / 13
+use App\Http\Middleware\SecurityHeadersMiddleware;
+use Illuminate\Foundation\Application;
 
-// Or as global middleware
-protected $middlewareGroups = [
-    'web' => [
-        // ... other middleware
-        \App\Http\Middleware\SecurityHeadersMiddleware::class,
-    ],
-];
+return Application::configure(basePath: dirname(__DIR__))
+    ->withRouting(
+        web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
+    )
+    ->withMiddleware(function (\Illuminate\Foundation\Configuration\Middleware $middleware) {
+        // Apply globally to all requests
+        $middleware->append(SecurityHeadersMiddleware::class);
+
+        // Or apply only to the web group
+        // $middleware->web(append: [SecurityHeadersMiddleware::class]);
+    })
+    ->create();
 ```
 
 ### Laravel CSP Package Usage
@@ -693,24 +724,25 @@ if (!empty($results['issues'])) {
 ## Security Headers Checklist
 
 ### Essential Headers
-- [ ] `X-Frame-Options: DENY` - Prevent clickjacking
-- [ ] `X-Content-Type-Options: nosniff` - Prevent MIME sniffing
-- [ ] `X-XSS-Protection: 1; mode=block` - Enable XSS filtering
-- [ ] `Content-Security-Policy` - Control resource loading
-- [ ] `Strict-Transport-Security` - Enforce HTTPS (HTTPS only)
+- [ ] `X-Frame-Options: DENY` — Prevent clickjacking (or use CSP `frame-ancestors 'none'`)
+- [ ] `X-Content-Type-Options: nosniff` — Prevent MIME sniffing
+- [ ] `Content-Security-Policy` — Strict CSP with nonces (replaces deprecated `X-XSS-Protection`)
+- [ ] `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload` — Enforce HTTPS
+- [ ] **~~`X-XSS-Protection`~~** — ⛔ REMOVED/DEPRECATED — Do not use
 
-### Additional Security Headers
-- [ ] `Referrer-Policy: strict-origin-when-cross-origin` - Control referrer information
-- [ ] `Permissions-Policy` - Control browser features access
-- [ ] `Cross-Origin-Embedder-Policy` - COEP protection
-- [ ] `Cross-Origin-Opener-Policy` - COOP protection
-- [ ] `Cross-Origin-Resource-Policy` - CORP protection
+### Additional Security Headers (2026 Standard)
+- [ ] `Referrer-Policy: strict-origin-when-cross-origin` — Control referrer information
+- [ ] `Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()` — Control browser APIs
+- [ ] `Cross-Origin-Opener-Policy: same-origin` — Isolate browsing context
+- [ ] `Cross-Origin-Embedder-Policy: require-corp` — Require CORP on cross-origin resources
+- [ ] `Cross-Origin-Resource-Policy: same-origin` — Prevent cross-origin reads
+- [ ] `Reporting-Endpoints` — Modern CSP violation reporting (replaces `Report-To`)
 
 ### Implementation Steps
-- [ ] Create security headers middleware
-- [ ] Implement CSP with appropriate policies
-- [ ] Test headers with security scanning tools
-- [ ] Monitor CSP violation reports
+- [ ] Register middleware in `bootstrap/app.php` (Laravel 11+) — **not** `Kernel.php` (removed)
+- [ ] Implement CSP with nonces — no `unsafe-inline`
+- [ ] Test headers with [securityheaders.com](https://securityheaders.com)
+- [ ] Monitor CSP violation reports via `Reporting-Endpoints`
 - [ ] Regularly update policies based on application changes
 
 ## Summary: Security Headers Implementation

@@ -21,29 +21,37 @@ Deployment security is critical because misconfigured servers are responsible fo
 
 ### SSL/TLS Certificate Management
 
-#### Let's Encrypt (Free Certificates)
+#### Let's Encrypt (Free Certificates) — Certbot Snap (2026 Method)
 ```bash
-# Install Certbot
-sudo apt update
-sudo apt install certbot python3-certbot-apache
+# Install Certbot via snap (recommended — apt package is outdated)
+sudo snap install --classic certbot
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
 
-# Generate certificate
+# Generate certificate with automatic HTTPS redirect
 sudo certbot --apache -d yourdomain.com -d www.yourdomain.com
 
-# Automatic renewal
-sudo crontab -e
-# Add: 0 12 * * * /usr/bin/certbot renew --quiet
+# Or for Nginx:
+sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
+
+# Automatic renewal is set up by default via systemd timer
+# Verify the renewal timer:
+sudo systemctl status snap.certbot.renew.timer
 ```
 
-#### Commercial SSL Certificates
+#### Commercial SSL — ECDSA P-256 (Recommended) or RSA-4096
 ```bash
-# Generate CSR (Certificate Signing Request)
-openssl req -new -newkey rsa:2048 -nodes -keyout yourdomain.key -out yourdomain.csr
+# ✅ Recommended: ECDSA P-256 — Faster, smaller, equally secure
+openssl ecparam -genkey -name prime256v1 | openssl ec -out yourdomain-ec.key
+openssl req -new -key yourdomain-ec.key -out yourdomain.csr \
+  -subj "/C=US/ST=State/L=City/O=Company/CN=yourdomain.com"
 
-# Submit CSR to certificate authority
+# Or RSA-4096 (if ECDSA not supported by your CA)
+# RSA-2048 is considered marginal by NIST as of 2024 — use 4096 minimum
+openssl req -new -newkey rsa:4096 -nodes -keyout yourdomain.key -out yourdomain.csr
+
 # Install certificate files
 sudo cp yourdomain.crt /etc/ssl/certs/
-sudo cp yourdomain.key /etc/ssl/private/
+sudo cp yourdomain-ec.key /etc/ssl/private/
 sudo cp intermediate.crt /etc/ssl/certs/
 ```
 
@@ -71,11 +79,15 @@ sudo cp intermediate.crt /etc/ssl/certs/
     Header always set X-XSS-Protection "1; mode=block"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
 
-    # SSL Protocol and Cipher Configuration
-    SSLProtocol all -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
-    SSLCipherSuite ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384
-    SSLHonorCipherOrder on
-    SSLCompression off
+    # SSL Protocol — TLS 1.3 preferred, TLS 1.2 minimum (TLS 1.0/1.1 disabled)
+    SSLProtocol -all +TLSv1.3 +TLSv1.2
+
+    # TLS 1.3 cipher suites (configured automatically in OpenSSL 1.1.1+)
+    # TLS 1.2 cipher suites — strong AEAD only
+    SSLCipherSuite ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256
+    SSLHonorCipherOrder off   # TLS 1.3 ignores this; for TLS 1.2 prefer server order
+    SSLCompression off        # Disable CRIME attack vector
+    SSLSessionTickets off     # Disable for perfect forward secrecy
 
     # OCSP Stapling
     SSLUseStapling on

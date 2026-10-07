@@ -606,7 +606,7 @@ class AdvancedFileSecurity
 // 4. LARAVEL SECURE FILE UPLOAD
 // =============================================================================
 
-namespace App\Http\Controllers;
+// In a Laravel app: namespace App\Http\Controllers;
 
 use App\Http\Requests\SecureFileUploadRequest;
 use Illuminate\Http\Request;
