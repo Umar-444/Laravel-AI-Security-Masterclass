@@ -10,7 +10,7 @@ Version 1 focuses on the **four fundamental pillars of web application security*
 **Status: Complete**
 
 #### Documentation
-- **[Secure Coding Basics Guide](docs/SecureCodingBasics.md)** - Comprehensive explanation of secure coding principles
+- **[Secure Coding Basics Guide](docs/01-foundations/secure-coding-basics.md)** - Comprehensive explanation of secure coding principles
 - Attack vectors and defense strategies
 - PHP/Laravel specific vulnerabilities
 - Security development lifecycle
@@ -27,7 +27,7 @@ Version 1 focuses on the **four fundamental pillars of web application security*
 **Status: Complete**
 
 #### Documentation
-- **[Input Handling Guide](docs/InputHandling.md)** - Complete validation and sanitization reference
+- **[Input Handling Guide](docs/03-input-validation/input-handling.md)** - Complete validation and sanitization reference
 - Allow-list vs block-list approaches
 - PHP built-in validation functions
 - Laravel validation features
@@ -45,7 +45,7 @@ Version 1 focuses on the **four fundamental pillars of web application security*
 **Status: Complete**
 
 #### Documentation
-- **[SQL Injection Prevention Guide](docs/SQLInjectionPrevention.md)** - Definitive SQLi prevention resource
+- **[SQL Injection Prevention Guide](docs/03-input-validation/sql-injection.md)** - Definitive SQLi prevention resource
 - How SQL injection works (with examples)
 - Prepared statements in PHP
 - Laravel Eloquent and Query Builder security
@@ -66,7 +66,7 @@ Version 1 focuses on the **four fundamental pillars of web application security*
 **Status: Complete**
 
 #### Documentation
-- **[Authentication & Password Handling Guide](docs/AuthenticationPasswordHandling.md)** - Complete authentication security reference
+- **[Authentication & Password Handling Guide](docs/02-authentication/password-handling.md)** - Complete authentication security reference
 - Password hashing algorithms (bcrypt, Argon2)
 - Session management and security
 - Secure login flow implementation
@@ -87,7 +87,7 @@ Version 1 focuses on the **four fundamental pillars of web application security*
 **Status: Complete**
 
 #### Documentation
-- **[Session Security Guide](docs/SessionSecurity.md)** - Secure cookies, session ID regeneration, avoiding sensitive data storage
+- **[Session Security Guide](docs/02-authentication/session-security.md)** - Secure cookies, session ID regeneration, avoiding sensitive data storage
 - Session attack vectors (hijacking, fixation, poisoning)
 - PHP session security configuration
 - Laravel session security features
@@ -103,7 +103,7 @@ Version 1 focuses on the **four fundamental pillars of web application security*
 **Status: Complete**
 
 #### Documentation
-- **[CSRF Protection Guide](docs/CSRFProtection.md)** - Prevent cross-site request forgery attacks
+- **[CSRF Protection Guide](docs/03-input-validation/csrf-protection.md)** - Prevent cross-site request forgery attacks
 - How CSRF attacks work and impact
 - Synchronizer token pattern implementation
 - Double-submit cookie pattern
@@ -121,7 +121,7 @@ Version 1 focuses on the **four fundamental pillars of web application security*
 **Status: Complete**
 
 #### Documentation
-- **[XSS Protection Guide](docs/XSSProtection.md)** - Prevent cross-site scripting attacks
+- **[XSS Protection Guide](docs/03-input-validation/xss-protection.md)** - Prevent cross-site scripting attacks
 - Reflected, stored, and DOM-based XSS types
 - Context-appropriate output escaping
 - htmlspecialchars() function usage
@@ -140,7 +140,7 @@ Version 1 focuses on the **four fundamental pillars of web application security*
 **Status: Complete**
 
 #### Documentation
-- **[File Upload Security Guide](docs/FileUploadSecurity.md)** - Comprehensive file upload security covering validation, storage, and attack prevention
+- **[File Upload Security Guide](docs/03-input-validation/file-uploads.md)** - Comprehensive file upload security covering validation, storage, and attack prevention
 - MIME type validation and content verification
 - Secure storage outside web root
 - File size limits and rate limiting
@@ -157,7 +157,7 @@ Version 1 focuses on the **four fundamental pillars of web application security*
 **Status: Complete**
 
 #### Documentation
-- **[Secure Configuration Guide](docs/SecureConfiguration.md)** - Production-ready configuration security
+- **[Secure Configuration Guide](docs/06-deployment/secure-configuration.md)** - Production-ready configuration security
 - .env file protection and encryption
 - Debug mode management and error handling
 - PHP version hiding and server information concealment
@@ -175,7 +175,7 @@ Version 1 focuses on the **four fundamental pillars of web application security*
 **Status: Complete**
 
 #### Documentation
-- **[Secure Headers Guide](docs/SecureHeaders.md)** - HTTP security headers implementation and best practices
+- **[Secure Headers Guide](docs/06-deployment/secure-headers.md)** - HTTP security headers implementation and best practices
 - X-Frame-Options and clickjacking prevention
 - X-Content-Type-Options and MIME sniffing protection
 - Content Security Policy (CSP) configuration
@@ -193,7 +193,7 @@ Version 1 focuses on the **four fundamental pillars of web application security*
 **Status: Complete**
 
 #### Documentation
-- **[API Security Basics Guide](docs/APISecurityBasics.md)** - Complete API authentication, rate limiting, and JSON security reference
+- **[API Security Basics Guide](docs/04-api-security/api-security-basics.md)** - Complete API authentication, rate limiting, and JSON security reference
 - API token authentication (Bearer tokens, API keys, JWT)
 - Rate limiting strategies (fixed window, sliding window)
 - Safe JSON input handling and validation
@@ -213,7 +213,7 @@ Version 1 focuses on the **four fundamental pillars of web application security*
 **Status: Complete**
 
 #### Documentation
-- **[Secure Deployment Guide](docs/SecureDeployment.md)** - Production deployment security and infrastructure hardening
+- **[Secure Deployment Guide](docs/06-deployment/secure-deployment.md)** - Production deployment security and infrastructure hardening
 - HTTPS/SSL certificate configuration and HSTS
 - Linux file permissions and ownership security
 - Hiding sensitive files (.env, logs, backups)
@@ -405,7 +405,7 @@ Version 1 is complete, but we want your feedback!
 
 Version 1 delivers a **complete, practical foundation** for PHP and Laravel security that developers can immediately implement in their projects. From understanding basic security principles to building production-ready authentication systems, Version 1 covers everything needed to build secure web applications.
 
-**Ready to build secure applications?** Start with the [Security Checklist](docs/Checklist.md) and work through the Version 1 topics systematically.
+**Ready to build secure applications?** Start with the [Security Checklist](docs/checklist.md) and work through the Version 1 topics systematically.
 
 **Want to contribute?** Check our [Contributing Guide](CONTRIBUTING.md) and join the security community!
 

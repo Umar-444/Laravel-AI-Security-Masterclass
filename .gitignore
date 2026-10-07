@@ -1,0 +1,22 @@
+# Operating Playbook (Private)
+important.md
+
+# Dependencies & Composer
+/vendor/
+composer.phar
+
+# Environment & Local Config
+.env
+.env.backup
+.env.production
+*.local
+
+# Testing & Cache
+.phpunit.result.cache
+.pest/
+/build/
+
+# OS Artifacts
+.DS_Store
+Thumbs.db
+Desktop.ini

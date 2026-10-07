@@ -206,15 +206,35 @@
 
 ---
 
-## Compliance & Legal
+---
 
-- [ ] Understand applicable regulatory requirements (GDPR, HIPAA, PCI DSS 4.0)
-- [ ] Implement compliance controls aligned with requirements
-- [ ] Set up data retention and deletion policies (GDPR right to erasure)
-- [ ] Implement privacy protections — data minimization, purpose limitation
-- [ ] Schedule regular compliance audits
-- [ ] Document all security measures for audit trail
+## AI & LLM Security (OWASP Top 10 for LLM Applications — 2025)
+
+- [ ] **LLM01: Prompt Injection** — System and user prompt separation with explicit XML boundary delimiters
+- [ ] **LLM02: Sensitive Information Disclosure** — Pre-flight PII redaction pipeline before sending data to external AI APIs
+- [ ] **LLM03: Supply Chain Vulnerabilities** — Pin and audit all third-party AI SDKs and embedding models
+- [ ] **LLM04: Model Denial of Service** — Per-tenant token rate limiting and hard daily billing caps
+- [ ] **LLM05: Improper Output Handling** — Treat all model outputs as untrusted input; never execute unescaped in Blade or raw SQL
+- [ ] **LLM06: Excessive Agency / Tool Sandboxing** — Allowlist agent tools and require human-in-the-loop approval for destructive actions
+- [ ] **RAG Tenant Isolation** — Enforce vector database tenant ID filters at the retrieval layer, never at prompt generation
 
 ---
 
-*Checklist Version: 2026.10 | PHP 8.4 / Laravel 13 | OWASP Top 10 (2025) | NIST SP 800-63B (2024)*
+## Regional Compliance & Legal (GDPR, HIPAA, PCI DSS 4.0, Saudi PDPL)
+
+- [ ] Understand applicable regulatory requirements (GDPR, HIPAA, PCI DSS 4.0)
+- [ ] **Saudi PDPL (Personal Data Protection Law / SDAIA)**:
+  - [ ] Implement data minimization and purpose limitation on all customer records
+  - [ ] Enforce in-kingdom data residency controls where required for sensitive national records
+  - [ ] Obtain explicit consent before transmitting citizen data to foreign AI cloud endpoints
+  - [ ] Maintain 72-hour breach notification procedures aligned with SDAIA regulatory directives
+- [ ] **ZATCA-Adjacent Security Practices**:
+  - [ ] Cryptographic signing and tamper-proof hash chains for financial transaction audit logs
+  - [ ] Secure storage and rotation of CSID cryptographic certificates
+- [ ] Set up data retention and automated deletion policies (right to erasure)
+- [ ] Document all security controls and maintain immutable audit logs for regulatory inspections
+
+---
+
+*Checklist Version: 2026.10 | PHP 8.4 / Laravel 13 | OWASP Top 10 (2025) | OWASP LLM Top 10 (2025) | Saudi PDPL / SDAIA*
+

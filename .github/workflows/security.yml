@@ -68,11 +68,15 @@ jobs:
           test -f README.md
           test -f SECURITY.md
           test -f CONTRIBUTING.md
+          test -f CODE_OF_CONDUCT.md
+          test -f CHANGELOG.md
           test -f LICENSE
-          test -f docs/Checklist.md
-          test -f docs/PHP.md
-          test -f docs/Laravel.md
-          test -f docs/APISecurityBasics.md
-          test -f docs/SecureHeaders.md
-          test -f docs/AuthenticationPasswordHandling.md
+          test -f docs/checklist.md
+          test -f docs/checklist.ar.md
+          test -f docs/01-foundations/php-security.md
+          test -f docs/01-foundations/laravel-security.md
+          test -f docs/02-authentication/password-handling.md
+          test -f docs/04-api-security/api-security-basics.md
+          test -f docs/05-ai-security/prompt-injection-defense.md
+          test -f docs/06-deployment/secure-headers.md
           echo "All documentation files validated successfully."
